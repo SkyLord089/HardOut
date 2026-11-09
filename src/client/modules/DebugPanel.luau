@@ -227,12 +227,16 @@ commands.shake = function(argument)
 end
 
 commands.lean = function(argument)
+	if argument == "off" then
+		Config.Camera.LeanAngle = 0
+		return notify("наклон при стрейфе выключен")
+	end
 	local value = tonumber(argument)
 	if not value then
-		return notify("/lean 1.2")
+		return notify(string.format("/lean 0.8 (сейчас %.2f, /lean off)", Config.Camera.LeanAngle))
 	end
 	Config.Camera.LeanAngle = math.clamp(value, 0, 10)
-	notify(string.format("наклон = %.2f", Config.Camera.LeanAngle))
+	notify(string.format("наклон при стрейфе = %.2f град", Config.Camera.LeanAngle))
 end
 
 commands.smooth = function(argument)

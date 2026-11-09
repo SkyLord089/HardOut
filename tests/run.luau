@@ -562,7 +562,15 @@ test("Config: режим вида и прятанье курсора задан�
 		(Config.Camera.HeadBob.RollDegrees or 0) <= 1,
 		"крен при ходьбе слишком заметный"
 	)
-	assertTrue(Config.Camera.LeanAngle <= 2, "наклон в стрейфе слишком сильный")
+	assertTrue(Config.Camera.LeanAngle <= 1, "наклон в стрейфе слишком сильный")
+	assertTrue(
+		Config.Camera.LeanAngle == 0,
+		"наклон при стрейфе должен быть выключен по умолчанию"
+	)
+	assertTrue(
+		(Config.Camera.HeadBob.Sway or 0) == 0,
+		"боковое покачивание должно быть выключено"
+	)
 	assertTrue(Config.Camera.ShakeScale <= 0.5, "тряска от выстрела слишком сильная")
 end)
 

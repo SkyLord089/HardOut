@@ -213,8 +213,10 @@ Config.Camera = {
 	BaseFov = 75,
 	FovLerpSpeed = 10,
 
-	-- Наклон камеры при стрейфе (градусы). Мягко: 1.0-1.5, "тарковее": 2.5+.
-	LeanAngle = 1.2,
+	-- Наклон камеры при стрейфе влево/вправо (градусы).
+	-- 0 = без наклона (по умолчанию: наклон при стрейфе быстро укачивает).
+	-- Если хочется "киношности": 0.6-1.0. Тарковее: 2.5+.
+	LeanAngle = 0,
 
 	-- Покачивание головы при ходьбе.
 	--   Amplitude   — вертикаль, studs (0.03-0.05 — едва заметно, 0.1+ — сильно)
@@ -2951,12 +2953,16 @@ commands.shake = function(argument)
 end
 
 commands.lean = function(argument)
+	if argument == "off" then
+		Config.Camera.LeanAngle = 0
+		return notify("наклон при стрейфе выключен")
+	end
 	local value = tonumber(argument)
 	if not value then
-		return notify("/lean 1.2")
+		return notify(string.format("/lean 0.8 (сейчас %.2f, /lean off)", Config.Camera.LeanAngle))
 	end
 	Config.Camera.LeanAngle = math.clamp(value, 0, 10)
-	notify(string.format("наклон = %.2f", Config.Camera.LeanAngle))
+	notify(string.format("наклон при стрейфе = %.2f град", Config.Camera.LeanAngle))
 end
 
 commands.smooth = function(argument)
