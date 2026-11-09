@@ -33,6 +33,7 @@ end
 local CharacterSetup = require(Modules:WaitForChild("CharacterSetup"))
 local CharacterTransparency = require(Modules:WaitForChild("CharacterTransparency"))
 local DebugPanel = require(Modules:WaitForChild("DebugPanel"))
+local SmokeTest = require(Modules:WaitForChild("SmokeTest"))
 local Hud = require(Modules:WaitForChild("Hud"))
 local PlayerController = require(Modules:WaitForChild("PlayerController"))
 local WeaponController = require(Modules:WaitForChild("WeaponController"))
@@ -58,5 +59,8 @@ Tracers.initialize()
 
 -- Диагностика: F2 — панель, /ho — статус в чат. Помогает понять, работает ли скрипт.
 DebugPanel.initialize()
+
+-- Самопроверка: реально ли крутится наш кадровый цикл (FPS, работает ли камера).
+SmokeTest.start()
 
 print("[HardOut] Клиент готов: вид от первого лица, руки/ноги, HUD.")

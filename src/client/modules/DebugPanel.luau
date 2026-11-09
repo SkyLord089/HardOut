@@ -89,14 +89,24 @@ local function describeCamera()
 	)
 end
 
+local lastCameraCFrame = nil
+local cameraMoved = false
+
 local function refresh()
 	if not textLabel then
 		return
 	end
+	local camera = workspace.CurrentCamera
+	if lastCameraCFrame and (camera.CFrame.Position - lastCameraCFrame.Position).Magnitude > 0.001 then
+		cameraMoved = true
+	end
+	lastCameraCFrame = camera.CFrame
+
 	textLabel.Text = string.format(
-		"[HardOut] диагностика (F2 — закрыть)\n\n%s\n\n%s\n\n/eye 0.8   /eyeoff 0.4   /body on|off   /head on|off\n/fov 80   /bob 0.02   /shake 0.2   /lean 1.2",
+		"[HardOut] диагностика (F2 — закрыть)\n\n%s\n\n%s\nкамера двигалась: %s\n\n/eye 0.8   /eyeoff 0.4   /body on|off   /head on|off\n/fov 80   /bob 0.2   /shake 0.2   /lean 1.2   /ho",
 		describeCharacter(),
-		describeCamera()
+		describeCamera(),
+		cameraMoved and "ДА" or "нет (стоишь на месте?)"
 	)
 end
 

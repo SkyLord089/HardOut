@@ -82,6 +82,13 @@ function PlayerController:start()
 		self.jumpRequested = false
 	end, "Ended")
 
+	-- Подписки на персонажа/кадры ставим ОДИН раз: повторный start()
+	-- (например, из-за переинициализации) удваивал бы движение и покачивание.
+	if self.started then
+		return
+	end
+	self.started = true
+
 	self:bindCharacter()
 	player.CharacterAdded:Connect(function(character)
 		self:bindCharacter(character)
@@ -243,6 +250,12 @@ function PlayerController:updateMovement(dt)
 end
 
 function PlayerController:updateCamera(dt)
+	-- Держим мышь запертой в центре: Roblox может вернуть свободный курсор,
+	-- и тогда камера перестаёт вращаться (ощущение "скрипт не работает").
+	if Config.Camera.HideCursor and UserInputService.MouseBehavior ~= Enum.MouseBehavior.LockCenter then
+		UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
+		UserInputService.MouseIconEnabled = false
+	end
 	self.camera:update(dt)
 end
 

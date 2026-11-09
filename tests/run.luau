@@ -548,9 +548,13 @@ test("Config: режим вида и прятанье курсора задан�
 	)
 	assertTrue(Config.Camera.HideCursor == true, "курсор не спрятан")
 	assertTrue(Config.Camera.Smoothing >= 0, "сглаживание отрицательное")
-	-- Анимации камеры не должны быть "сильными".
+	-- Анимации камеры: заметные, но не укачивающие.
 	assertTrue(
-		Config.Camera.HeadBob.Amplitude <= 0.1,
+		Config.Camera.HeadBob.Amplitude >= 0.1,
+		"покачивание головы слишком слабое — его не видно"
+	)
+	assertTrue(
+		Config.Camera.HeadBob.Amplitude <= 0.5,
 		"покачивание головы слишком большое"
 	)
 	assertTrue(Config.Camera.LeanAngle <= 2, "наклон в стрейфе слишком сильный")

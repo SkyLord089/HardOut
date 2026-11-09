@@ -111,8 +111,8 @@ function Camera:update(dt)
 		self.bobPhase += dt * (bob.Frequency * math.sqrt(self.speed / Config.Movement.WalkSpeed)) * math.pi * 2
 		local amount = math.clamp(self.speed / Config.Movement.WalkSpeed, 0, 1.6)
 		bobY = math.abs(math.sin(self.bobPhase)) * bob.Amplitude * amount
-		bobRoll = math.sin(self.bobPhase) * 0.5 * amount
-		bobX = math.cos(self.bobPhase) * bob.Amplitude * 0.5 * amount
+		bobRoll = math.sin(self.bobPhase) * 1.2 * amount
+		bobX = math.cos(self.bobPhase) * bob.Amplitude * 0.6 * amount
 	end
 
 	self.leanAngle += (self.leanTarget * Config.Camera.LeanAngle - self.leanAngle) * math.clamp(dt * 10, 0, 1)

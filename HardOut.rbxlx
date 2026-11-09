@@ -216,11 +216,12 @@ Config.Camera = {
 	-- Наклон камеры при стрейфе (градусы). Мягко: 1.0-1.5, "тарковее": 2.5+.
 	LeanAngle = 1.2,
 
-	-- Покачивание головы при ходьбе (мягкое, чтобы не укачивало).
+	-- Покачивание головы при ходьбе.
+	-- 0.045 — почти незаметно; 0.15-0.25 — явно чувствуется.
 	HeadBob = {
 		Enabled = true,
-		Amplitude = 0.045, -- studs
-		Frequency = 1.5, -- множитель к частоте шага
+		Amplitude = 0.16, -- studs
+		Frequency = 1.8, -- множитель к частоте шага
 	},
 
 	-- Сила "тряски" от выстрела. 0 = совсем без тряски.
@@ -239,8 +240,9 @@ Config.Camera = {
 	EyeOffset = Vector3.new(0, 0.35, 0),
 
 	-- Насколько камера выдвинута вперёд из головы (studs).
-	-- 0 = камера внутри головы (тело почти не видно), 0.5-0.8 = видно торс/живот.
-	EyeForward = 0.6,
+	-- 0 = камера внутри головы (видно только ноги), 0.4-0.5 = видно торс и живот.
+	-- Подбирай командой /eye 0.45 прямо в игре.
+	EyeForward = 0.45,
 }
 
 --[[ Руки и ноги от первого лица ]]
@@ -2084,7 +2086,7 @@ function TestRange.build()
 end
 
 return TestRange
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="StarterPlayer" referent="RBX0000000000000000000000000000002C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayer</string><float name="CameraMaxZoomDistance">0.5</float><float name="CameraMinZoomDistance">0.5</float><float name="CharacterWalkSpeed">8</float><float name="CharacterJumpPower">42</float><bool name="CharacterUseJumpPower">true</bool><bool name="EnableMouseLockOption">false</bool></Properties><Item class="StarterPlayerScripts" referent="RBX0000000000000000000000000000002B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayerScripts</string></Properties><Item class="LocalScript" referent="RBX0000000000000000000000000000001D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ClientBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="StarterPlayer" referent="RBX0000000000000000000000000000002D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayer</string><float name="CameraMaxZoomDistance">0.5</float><float name="CameraMinZoomDistance">0.5</float><float name="CharacterWalkSpeed">8</float><float name="CharacterJumpPower">42</float><bool name="CharacterUseJumpPower">true</bool><bool name="EnableMouseLockOption">false</bool></Properties><Item class="StarterPlayerScripts" referent="RBX0000000000000000000000000000002C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayerScripts</string></Properties><Item class="LocalScript" referent="RBX0000000000000000000000000000001D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ClientBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	HardOut — клиентская точка входа.
 	Запускает HUD, контроллер игрока (камера + руки/ноги) и оружие.
@@ -2119,6 +2121,7 @@ end
 local CharacterSetup = require(Modules:WaitForChild("CharacterSetup"))
 local CharacterTransparency = require(Modules:WaitForChild("CharacterTransparency"))
 local DebugPanel = require(Modules:WaitForChild("DebugPanel"))
+local SmokeTest = require(Modules:WaitForChild("SmokeTest"))
 local Hud = require(Modules:WaitForChild("Hud"))
 local PlayerController = require(Modules:WaitForChild("PlayerController"))
 local WeaponController = require(Modules:WaitForChild("WeaponController"))
@@ -2145,8 +2148,11 @@ Tracers.initialize()
 -- Диагностика: F2 — панель, /ho — статус в чат. Помогает понять, работает ли скрипт.
 DebugPanel.initialize()
 
+-- Самопроверка: реально ли крутится наш кадровый цикл (FPS, работает ли камера).
+SmokeTest.start()
+
 print("[HardOut] Клиент готов: вид от первого лица, руки/ноги, HUD.")
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX0000000000000000000000000000002A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX0000000000000000000000000000001E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Camera</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX0000000000000000000000000000002B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX0000000000000000000000000000001E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Camera</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Camera.luau
 	Камера от первого лица, полностью управляемая скриптом.
@@ -2259,8 +2265,8 @@ function Camera:update(dt)
 		self.bobPhase += dt * (bob.Frequency * math.sqrt(self.speed / Config.Movement.WalkSpeed)) * math.pi * 2
 		local amount = math.clamp(self.speed / Config.Movement.WalkSpeed, 0, 1.6)
 		bobY = math.abs(math.sin(self.bobPhase)) * bob.Amplitude * amount
-		bobRoll = math.sin(self.bobPhase) * 0.5 * amount
-		bobX = math.cos(self.bobPhase) * bob.Amplitude * 0.5 * amount
+		bobRoll = math.sin(self.bobPhase) * 1.2 * amount
+		bobX = math.cos(self.bobPhase) * bob.Amplitude * 0.6 * amount
 	end
 
 	self.leanAngle += (self.leanTarget * Config.Camera.LeanAngle - self.leanAngle) * math.clamp(dt * 10, 0, 1)
@@ -2820,14 +2826,24 @@ local function describeCamera()
 	)
 end
 
+local lastCameraCFrame = nil
+local cameraMoved = false
+
 local function refresh()
 	if not textLabel then
 		return
 	end
+	local camera = workspace.CurrentCamera
+	if lastCameraCFrame and (camera.CFrame.Position - lastCameraCFrame.Position).Magnitude > 0.001 then
+		cameraMoved = true
+	end
+	lastCameraCFrame = camera.CFrame
+
 	textLabel.Text = string.format(
-		"[HardOut] диагностика (F2 — закрыть)\n\n%s\n\n%s\n\n/eye 0.8   /eyeoff 0.4   /body on|off   /head on|off\n/fov 80   /bob 0.02   /shake 0.2   /lean 1.2",
+		"[HardOut] диагностика (F2 — закрыть)\n\n%s\n\n%s\nкамера двигалась: %s\n\n/eye 0.8   /eyeoff 0.4   /body on|off   /head on|off\n/fov 80   /bob 0.2   /shake 0.2   /lean 1.2   /ho",
 		describeCharacter(),
-		describeCamera()
+		describeCamera(),
+		cameraMoved and "ДА" or "нет (стоишь на месте?)"
 	)
 end
 
@@ -3901,6 +3917,13 @@ function PlayerController:start()
 		self.jumpRequested = false
 	end, "Ended")
 
+	-- Подписки на персонажа/кадры ставим ОДИН раз: повторный start()
+	-- (например, из-за переинициализации) удваивал бы движение и покачивание.
+	if self.started then
+		return
+	end
+	self.started = true
+
 	self:bindCharacter()
 	player.CharacterAdded:Connect(function(character)
 		self:bindCharacter(character)
@@ -4062,6 +4085,12 @@ function PlayerController:updateMovement(dt)
 end
 
 function PlayerController:updateCamera(dt)
+	-- Держим мышь запертой в центре: Roblox может вернуть свободный курсор,
+	-- и тогда камера перестаёт вращаться (ощущение "скрипт не работает").
+	if Config.Camera.HideCursor and UserInputService.MouseBehavior ~= Enum.MouseBehavior.LockCenter then
+		UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
+		UserInputService.MouseIconEnabled = false
+	end
 	self.camera:update(dt)
 end
 
@@ -4086,7 +4115,79 @@ function PlayerController:setAdsFov(fov)
 end
 
 return PlayerController
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000027"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Tracers</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000027"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">SmokeTest</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+--[[
+	SmokeTest.luau
+	Самопроверка «а скрипт-то правда работает?».
+
+	Проблема: если клиентский код не запустился или упал на этапе require,
+	снаружи это выглядит просто как «ничего не происходит» — ни ошибок на
+	экране, ни изменений.
+
+	Что делает модуль:
+	  * каждую секунду печатает в Output пульс: FPS, жив ли кадровый цикл,
+	    тип камеры и накопленное время;
+	  * если кадры перестали идти (цикл умер) — выводит явное предупреждение;
+	  * один раз печатает сводку окружения (Roblox клиент / Studio).
+
+	Ищи в Output строки `[HardOut:пульс]`. Нет строк — код не выполняется.
+]]
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local SmokeTest = {}
+
+local player = Players.LocalPlayer
+
+function SmokeTest.start()
+	local frames = 0
+	local elapsed = 0
+	local started = os.clock()
+	local alive = true
+
+	RunService.Heartbeat:Connect(function(dt)
+		frames += 1
+		elapsed += dt
+		alive = true
+	end)
+
+	task.spawn(function()
+		while true do
+			task.wait(1)
+
+			local fps = elapsed > 0 and (frames / elapsed) or 0
+			local camera = workspace.CurrentCamera
+			local character = player.Character
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+			print(
+				string.format(
+					"[HardOut:пульс] FPS %.0f | кадров %d | камера %s | персонаж %s",
+					fps,
+					frames,
+					camera and camera.CameraType.Name or "нет",
+					character and (humanoid and humanoid.RigType.Name or "есть") or "нет"
+				)
+			)
+
+			if not alive then
+				warn("[HardOut] Кадровый цикл не идёт — canvas/цикл завис.")
+			end
+			alive = false
+			frames = 0
+			elapsed = 0
+
+			if os.clock() - started > 8 then
+				-- дальше пульс реже, чтобы не спамить
+				task.wait(4)
+			end
+		end
+	end)
+end
+
+return SmokeTest
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000028"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Tracers</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Tracers.luau
 	Визуал выстрелов: трассер (линия от ствола до попадания), вспышка в точке удара.
@@ -4203,7 +4304,7 @@ function Tracers.initialize()
 end
 
 return Tracers
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000028"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000029"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	WeaponController.luau
 	Оружие в руках на клиенте: слоты, экипировка, стрельба, перезарядка, эффекты.
@@ -4516,7 +4617,7 @@ function WeaponController:update(dt)
 end
 
 return WeaponController
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000029"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponHolder</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000002A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponHolder</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	WeaponHolder.luau
 	ЗАГОТОВКА ПОД ОРУЖИЕ — здесь модель пушки превращается в "оружие в руках".
@@ -4759,5 +4860,5 @@ function WeaponHolder:destroy()
 end
 
 return WeaponHolder
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item></Item><Item class="Players" referent="RBX0000000000000000000000000000002D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX0000000000000000000000000000002E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item></Item><Item class="Players" referent="RBX0000000000000000000000000000002E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX0000000000000000000000000000002F"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
 </roblox>
