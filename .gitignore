@@ -1,5 +1,8 @@
 # Rojo
+# Готовый файл места собирается tools/build_place.py и КОММИТИТСЯ,
+# чтобы проект можно было открыть без Rojo. Остальные места игнорируем.
 *.rbxlx
+!HardOut.rbxlx
 *.rbxl.lock
 *.rbxlx.lock
 *.rbxl

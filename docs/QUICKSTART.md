@@ -1,9 +1,14 @@
 # Запуск за 5 минут
 
+> **Самый быстрый путь — без Rojo:** скачай `HardOut.rbxlx`, открой в Studio,
+> нажми Play. См. `docs/WITHOUT_ROJO.md`.
+
+## Вариант без Rojo
+
 > Первый раз с Rojo? См. `docs/INSTALL_ROJO.md` — там пошагово про `rojo.exe`,
 > PATH и подключение плагина.
 
-## 1. Rojo
+## Вариант с Rojo
 
 ```bash
 # из корня проекта (там, где лежит default.project.json)

@@ -8,7 +8,8 @@
     "test": "node tools/run-tests.mjs",
     "verify": "npm run check && npm test",
     "build": "rojo build default.project.json -o HardOut.rbxlx",
-    "serve": "rojo serve"
+    "serve": "rojo serve",
+    "build:place": "python3 tools/build_place.py"
   },
   "devDependencies": {
     "@luau-rs/luau": "^0.739.0"
