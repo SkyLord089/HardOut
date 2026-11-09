@@ -9,7 +9,9 @@
     "verify": "npm run check && npm test",
     "build": "rojo build default.project.json -o HardOut.rbxlx",
     "serve": "rojo serve",
-    "build:place": "python3 tools/build_place.py"
+    "build:place": "python3 tools/build_place.py",
+    "verify:place": "python3 tools/verify_place.py HardOut.rbxlx",
+    "verify:all": "npm run check && npm test && npm run build:place && npm run verify:place"
   },
   "devDependencies": {
     "@luau-rs/luau": "^0.739.0"

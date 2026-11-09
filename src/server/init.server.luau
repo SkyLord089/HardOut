@@ -15,7 +15,17 @@ end
 local Config = require(HardOut:WaitForChild("Config"))
 local Net = require(HardOut:WaitForChild("Net"):WaitForChild("Remotes"))
 
-local Modules = script:WaitForChild("Modules")
+-- Папка Modules лежит РЯДОМ со скриптом (сиблинг), а не внутри него.
+-- Важно: не block-им поток навсегда — иначе полигон не построится и будет "пусто".
+local Modules = script.Parent and script.Parent:FindFirstChild("Modules")
+if not Modules then
+	warn(
+		"[HardOut] НЕ НАЙДЕНА папка Modules рядом с ServerBoot. "
+			.. "Скрипт должен лежать в ServerScriptService вместе с папкой Modules."
+	)
+	return
+end
+
 local CombatService = require(Modules:WaitForChild("CombatService"))
 local TestRange = require(Modules:WaitForChild("TestRange"))
 local RaidSandbox = require(Modules:WaitForChild("RaidSandbox"))

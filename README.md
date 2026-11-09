@@ -15,7 +15,15 @@
 
 В репозитории лежит собранный файл места **`HardOut.rbxlx`**.
 Скачай → открой в Studio → **Play**. Ни Rojo, ни плагина, ни терминала.
-Подробности и пересборка: `docs/WITHOUT_ROJO.md`.
+
+Если правил код и нужен свежий файл:
+
+```bash
+python3 tools/build_place.py     # собрать
+python3 tools/verify_place.py    # проверить (10 проверок, включая пути require)
+```
+
+Подробности: `docs/WITHOUT_ROJO.md` и `docs/BUILD_PLACE.md`.
 
 ### Вариант A — Rojo (удобнее, когда начнёшь писать код)
 

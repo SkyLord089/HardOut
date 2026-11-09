@@ -278,6 +278,25 @@ function TestRange.build()
 	spawnLocation.Parent = map
 
 	map.Parent = workspace
+
+	-- Страховка: если персонаж каким-то образом оказался под полом (спавн в
+	-- пустоте, старый сейв), возвращаем его в зону. Это же спасает от "падаю".
+	local Players = game:GetService("Players")
+	local floorTop = 0
+	Players.PlayerAdded:Connect(function(player)
+		player.CharacterAdded:Connect(function(character)
+			local root = character:WaitForChild("HumanoidRootPart", 10)
+			if not root then
+				return
+			end
+			task.delay(1.5, function()
+				if root.Parent and root.Position.Y < floorTop - 15 then
+					root.CFrame = CFrame.new(0, 6, 38)
+				end
+			end)
+		end)
+	end)
+
 	return map
 end
 

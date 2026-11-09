@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+<Meta name="ExplicitAutoJoints">true</Meta>
 <External>null</External>
 <External>nil</External>
-<Meta name="ExplicitAutoJoints">true</Meta>
-<Item class="Workspace" referent="RBX37"><Properties><string name="Name">Workspace</string><bool name="StreamingEnabled">false</bool><float name="Gravity">196.2</float></Properties></Item><Item class="Lighting" referent="RBX38"><Properties><string name="Name">Lighting</string><Color3 name="Ambient"><R>0.156863</R><G>0.156863</G><B>0.156863</B></Color3><Color3 name="OutdoorAmbient"><R>0.392157</R><G>0.392157</G><B>0.392157</B></Color3><float name="Brightness">2</float><float name="ClockTime">13</float><float name="EnvironmentDiffuseScale">0.4</float><float name="EnvironmentSpecularScale">0.6</float><bool name="GlobalShadows">true</bool><float name="ShadowSoftness">0.25</float><float name="ExposureCompensation">0.15</float></Properties></Item><Item class="ReplicatedStorage" referent="RBX36"><Properties><string name="Name">ReplicatedStorage</string></Properties><Item class="Folder" referent="RBX34"><Properties><string name="Name">HardOut</string></Properties><Item class="ModuleScript" referent="RBX20"><Properties><string name="Name">Animator</string><ProtectedString name="Source">--!strict
+<Item class="Workspace" referent="RBX00000000000000000000000000000003"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Workspace</string><bool name="StreamingEnabled">false</bool><float name="Gravity">196.2</float></Properties><Item class="Part" referent="RBX00000000000000000000000000000001"><Properties><bool name="Anchored">true</bool><BinaryString name="AttributesSerialize"></BinaryString><float name="FrontParamA">-0.5</float><float name="FrontParamB">0.5</float><token name="FrontSurface">0</token><token name="FrontSurfaceInput">0</token><float name="BackParamA">-0.5</float><float name="BackParamB">0.5</float><token name="BackSurface">0</token><token name="BackSurfaceInput">0</token><float name="TopParamA">-0.5</float><float name="TopParamB">0.5</float><token name="TopSurface">0</token><token name="TopSurfaceInput">0</token><float name="BottomParamA">-0.5</float><float name="BottomParamB">0.5</float><token name="BottomSurface">0</token><token name="BottomSurfaceInput">0</token><float name="LeftParamA">-0.5</float><float name="LeftParamB">0.5</float><token name="LeftSurface">0</token><token name="LeftSurfaceInput">0</token><float name="RightParamA">-0.5</float><float name="RightParamB">0.5</float><token name="RightSurface">0</token><token name="RightSurfaceInput">0</token><CoordinateFrame name="CFrame"><X>0</X><Y>-10.5</Y><Z>0</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame><bool name="CanCollide">true</bool><bool name="CanQuery">true</bool><bool name="CanTouch">true</bool><bool name="CastShadow">true</bool><int name="CollisionGroupId">0</int><Color3uint8 name="Color3uint8">4284243036</Color3uint8><PhysicalProperties name="CustomPhysicalProperties"><CustomPhysics>false</CustomPhysics></PhysicalProperties><bool name="Locked">false</bool><bool name="Massless">false</bool><token name="Material">256</token><string name="Name">Baseplate</string><CoordinateFrame name="PivotOffset"><X>0</X><Y>0</Y><Z>0</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame><float name="Reflectance">0</float><int name="RootPriority">0</int><Vector3 name="RotVelocity"><X>0</X><Y>0</Y><Z>0</Z></Vector3><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString><float name="Transparency">0</float><Vector3 name="Velocity"><X>0</X><Y>0</Y><Z>0</Z></Vector3><token name="formFactorRaw">1</token><token name="shape">1</token><Vector3 name="size"><X>512</X><Y>20</Y><Z>512</Z></Vector3></Properties></Item><Item class="SpawnLocation" referent="RBX00000000000000000000000000000002"><Properties><bool name="Anchored">true</bool><BinaryString name="AttributesSerialize"></BinaryString><float name="FrontParamA">-0.5</float><float name="FrontParamB">0.5</float><token name="FrontSurface">0</token><token name="FrontSurfaceInput">0</token><float name="BackParamA">-0.5</float><float name="BackParamB">0.5</float><token name="BackSurface">0</token><token name="BackSurfaceInput">0</token><float name="TopParamA">-0.5</float><float name="TopParamB">0.5</float><token name="TopSurface">0</token><token name="TopSurfaceInput">0</token><float name="BottomParamA">-0.5</float><float name="BottomParamB">0.5</float><token name="BottomSurface">0</token><token name="BottomSurfaceInput">0</token><float name="LeftParamA">-0.5</float><float name="LeftParamB">0.5</float><token name="LeftSurface">0</token><token name="LeftSurfaceInput">0</token><float name="RightParamA">-0.5</float><float name="RightParamB">0.5</float><token name="RightSurface">0</token><token name="RightSurfaceInput">0</token><CoordinateFrame name="CFrame"><X>0</X><Y>1.5</Y><Z>40</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame><bool name="CanCollide">true</bool><bool name="CanQuery">true</bool><bool name="CanTouch">true</bool><bool name="CastShadow">true</bool><int name="CollisionGroupId">0</int><Color3uint8 name="Color3uint8">4285427310</Color3uint8><PhysicalProperties name="CustomPhysicalProperties"><CustomPhysics>false</CustomPhysics></PhysicalProperties><bool name="Locked">false</bool><bool name="Massless">false</bool><token name="Material">256</token><string name="Name">SpawnLocation</string><CoordinateFrame name="PivotOffset"><X>0</X><Y>0</Y><Z>0</Z><R00>1</R00><R01>0</R01><R02>0</R02><R10>0</R10><R11>1</R11><R12>0</R12><R20>0</R20><R21>0</R21><R22>1</R22></CoordinateFrame><float name="Reflectance">0</float><int name="RootPriority">0</int><Vector3 name="RotVelocity"><X>0</X><Y>0</Y><Z>0</Z></Vector3><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString><float name="Transparency">0</float><Vector3 name="Velocity"><X>0</X><Y>0</Y><Z>0</Z></Vector3><token name="formFactorRaw">1</token><token name="shape">1</token><Vector3 name="size"><X>12</X><Y>1</Y><Z>12</Z></Vector3><bool name="AllowTeamChangeOnTouch">false</bool><int name="Duration">0</int><bool name="Enabled">true</bool><bool name="Neutral">true</bool><int name="TeamColor">194</int></Properties></Item></Item><Item class="Lighting" referent="RBX00000000000000000000000000000004"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Lighting</string><Color3 name="Ambient"><R>0.156863</R><G>0.156863</G><B>0.156863</B></Color3><Color3 name="OutdoorAmbient"><R>0.392157</R><G>0.392157</G><B>0.392157</B></Color3><float name="Brightness">2</float><float name="ClockTime">13</float><float name="EnvironmentDiffuseScale">0.4</float><float name="EnvironmentSpecularScale">0.6</float><bool name="GlobalShadows">true</bool><float name="ShadowSoftness">0.25</float><float name="ExposureCompensation">0.15</float></Properties></Item><Item class="ReplicatedStorage" referent="RBX00000000000000000000000000000015"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">ReplicatedStorage</string></Properties><Item class="Folder" referent="RBX00000000000000000000000000000013"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">HardOut</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX00000000000000000000000000000005"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Animator</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	Animator.luau
 	Процедурная анимация верхней части тела от первого лица.
@@ -99,7 +99,7 @@ function Animator:Reset()
 end
 
 return Animator
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX21"><Properties><string name="Name">ArmSolver</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000006"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ArmSolver</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	ArmSolver.luau
 	Двухкостная IK-математика для рук и ног.
@@ -125,12 +125,12 @@ function ArmSolver.solve(root: Vector3, target: Vector3, l1: number, l2: number,
 	local toTarget = target - root
 	local distance = toTarget.Magnitude
 
-	if distance &lt; 0.0001 then
+	if distance < 0.0001 then
 		return root + hint.Unit * l1, true
 	end
 
 	local direction = toTarget / distance
-	local reachable = distance &lt;= (l1 + l2) - 0.0001
+	local reachable = distance <= (l1 + l2) - 0.0001
 	local clampedDistance = math.min(distance, l1 + l2 - 0.0001)
 
 	-- Недостижимая цель: рука/нога полностью выпрямляется, сустав строго на оси.
@@ -140,16 +140,16 @@ function ArmSolver.solve(root: Vector3, target: Vector3, l1: number, l2: number,
 		return joint, false
 	end
 
-	-- Проекция сустава на ось root-&gt;target.
+	-- Проекция сустава на ось root->target.
 	local a = (l1 * l1 - l2 * l2 + clampedDistance * clampedDistance) / (2 * clampedDistance)
 	local hSquared = l1 * l1 - a * a
-	local h = hSquared &gt; 0 and math.sqrt(hSquared) or 0
+	local h = hSquared > 0 and math.sqrt(hSquared) or 0
 
 	-- Ортогональная составляющая hint относительно оси.
 	local hintPerp = hint - direction * hint:Dot(direction)
-	if hintPerp.Magnitude &lt; 0.0001 then
+	if hintPerp.Magnitude < 0.0001 then
 		-- hint параллелен оси: берём любую перпендикулярную ось.
-		local fallback = math.abs(direction.Y) &gt; 0.99 and Vector3.xAxis or Vector3.yAxis
+		local fallback = math.abs(direction.Y) > 0.99 and Vector3.xAxis or Vector3.yAxis
 		hintPerp = fallback - direction * fallback:Dot(direction)
 	end
 	local side = hintPerp.Unit
@@ -159,7 +159,7 @@ function ArmSolver.solve(root: Vector3, target: Vector3, l1: number, l2: number,
 end
 
 --[[
-	Возвращает CFrames двух сегментов (плечо-&gt;локоть, локоть-&gt;кисть),
+	Возвращает CFrames двух сегментов (плечо->локоть, локоть->кисть),
 	чтобы части нужного размера вставали между точками.
 
 	Сегмент — это Part с Size = (толщина, толщина, длина), у которого
@@ -168,7 +168,7 @@ end
 function ArmSolver.segmentCFrame(start: Vector3, finish: Vector3): CFrame
 	local delta = finish - start
 	local length = delta.Magnitude
-	if length &lt; 0.0001 then
+	if length < 0.0001 then
 		return CFrame.new(start)
 	end
 	local midpoint = start + delta * 0.5
@@ -192,7 +192,7 @@ function ArmSolver.strideOffset(phase: number, stride: number, lift: number): Ve
 end
 
 return ArmSolver
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX22"><Properties><string name="Name">Config</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000007"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Config</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	Config.luau
 	Все настройки тестового стенда в одном месте.
@@ -204,7 +204,7 @@ local Config = {}
 --[[ Оружие ]]
 Config.Weapons = {
 	-- Папка в ReplicatedStorage, куда кладутся модели оружия (Model или Tool).
-	-- Положил модель -&gt; стенд сам выдаст её в руки (слот 1, дальше по алфавиту).
+	-- Положил модель -> стенд сам выдаст её в руки (слот 1, дальше по алфавиту).
 	FolderPath = "ReplicatedStorage.WeaponModels",
 
 	-- Подгонять размер модели под эталон (GunPreset.ReferenceSize).
@@ -212,7 +212,7 @@ Config.Weapons = {
 	AutoScale = false,
 
 	-- Звук выстрела: вставь свой rbxassetid, например "rbxassetid://123456789".
-	-- Пусто -&gt; без звука (стенд не тянет сторонние ассеты).
+	-- Пусто -> без звука (стенд не тянет сторонние ассеты).
 	ShotSoundId = "",
 }
 
@@ -270,7 +270,7 @@ Config.Movement = {
 
 --[[ Тестовый полигон ]]
 Config.TestRange = {
-	-- false -&gt; полигон не строится (если хочешь свой уровень).
+	-- false -> полигон не строится (если хочешь свой уровень).
 	Enabled = true,
 }
 
@@ -291,7 +291,7 @@ Config.Keys = {
 }
 
 return Config
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX23"><Properties><string name="Name">Signal</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000008"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Signal</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	Signal.luau
 	Минимальный сигнал (без RBXScriptSignal), чтобы модули не зависели от Instances.
@@ -347,7 +347,7 @@ function Signal:DisconnectAll()
 end
 
 return Signal
-</ProtectedString></Properties></Item><Item class="Folder" referent="RBX25"><Properties><string name="Name">Net</string></Properties><Item class="ModuleScript" referent="RBX24"><Properties><string name="Name">Remotes</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX0000000000000000000000000000000A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Net</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX00000000000000000000000000000009"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Remotes</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	Remotes.luau
 	Имена и ленивое создание RemoteEvent'ов. Сервер создаёт их в ReplicatedStorage.HardOut.Net,
@@ -359,11 +359,11 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Remotes = {}
 
 Remotes.Names = {
-	Fire = "Fire", -- client -&gt; server: запрос выстрела
-	ShotResult = "ShotResult", -- server -&gt; client: подтверждённый выстрел (трассер/попадание)
-	Reload = "Reload", -- client -&gt; server: перезарядка
-	Inventory = "Inventory", -- server -&gt; client: список выданного оружия и патронов
-	StateUpdate = "StateUpdate", -- server -&gt; client: патроны/перезарядка
+	Fire = "Fire", -- client -> server: запрос выстрела
+	ShotResult = "ShotResult", -- server -> client: подтверждённый выстрел (трассер/попадание)
+	Reload = "Reload", -- client -> server: перезарядка
+	Inventory = "Inventory", -- server -> client: список выданного оружия и патронов
+	StateUpdate = "StateUpdate", -- server -> client: патроны/перезарядка
 }
 
 function Remotes.getFolder(): Instance
@@ -399,12 +399,12 @@ function Remotes.waitFor(name: string): RemoteEvent
 end
 
 return Remotes
-</ProtectedString></Properties></Item></Item><Item class="Folder" referent="RBX33"><Properties><string name="Name">Weapon</string></Properties><Item class="ModuleScript" referent="RBX26"><Properties><string name="Name">AimSolver</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item><Item class="Folder" referent="RBX00000000000000000000000000000012"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Weapon</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX0000000000000000000000000000000B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">AimSolver</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	AimSolver.luau
 	Мозг стрельбы: решает, куда попала пуля и сколько урона нанести.
 	Специально отделён от Roblox-специфики: физика попадания приходит
-	через resolver (origin, direction, range) -&gt; результат raycast или nil.
+	через resolver (origin, direction, range) -> результат raycast или nil.
 
 	Чистую часть можно гонять в юнит-тестах без движка.
 ]]
@@ -429,7 +429,7 @@ local LIMB_PARTS = {
 	["Right Leg"] = true,
 }
 
---[[ Имя части -&gt; множитель урона. ]]
+--[[ Имя части -> множитель урона. ]]
 function AimSolver.zoneMultiplier(partName, stats)
 	if HEAD_PARTS[partName] then
 		return stats.HeadshotMult
@@ -497,7 +497,7 @@ function AimSolver.computeSpread(stats, isAiming, speedRatio)
 end
 
 return AimSolver
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX27"><Properties><string name="Name">Ballistics</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000000C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Ballistics</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	Ballistics.luau
 	Чистая математика стрельбы: разброс, паттерн отдачи, падение пули.
@@ -509,7 +509,7 @@ local Ballistics = {}
 
 --[[ Случайный единичный вектор внутри конуса с полууглом coneDegrees. ]]
 function Ballistics.applySpread(direction, coneDegrees, rng)
-	if coneDegrees &lt;= 0 then
+	if coneDegrees <= 0 then
 		return direction.Unit
 	end
 
@@ -517,7 +517,7 @@ function Ballistics.applySpread(direction, coneDegrees, rng)
 	local cosLimit = math.cos(math.rad(math.clamp(coneDegrees, 0, 89)))
 
 	-- Ортонормированный базис вокруг направления.
-	local reference = math.abs(dir.Y) &gt; 0.99 and Vector3.new(1, 0, 0) or Vector3.new(0, 1, 0)
+	local reference = math.abs(dir.Y) > 0.99 and Vector3.new(1, 0, 0) or Vector3.new(0, 1, 0)
 	local right = dir:Cross(reference).Unit
 	local trueUp = right:Cross(dir).Unit
 
@@ -568,7 +568,7 @@ end
 --[[ На какой угол (в градусах) задрать ствол, чтобы попасть в точку на distance. ]]
 function Ballistics.dropCompensation(distance, speed, gravity)
 	local g = gravity or 196.2
-	if speed &lt;= 0 or distance &lt;= 0 then
+	if speed <= 0 or distance <= 0 then
 		return 0
 	end
 	local t = distance / speed
@@ -580,7 +580,7 @@ end
 function Ballistics.aimAdjust(origin, target, speed, gravity)
 	local flat = Vector3.new(target.X, 0, target.Z) - Vector3.new(origin.X, 0, origin.Z)
 	local horizontalDistance = flat.Magnitude
-	if horizontalDistance &lt; 0.01 then
+	if horizontalDistance < 0.01 then
 		return target
 	end
 	local correction = Ballistics.dropCompensation(horizontalDistance, speed, gravity)
@@ -592,7 +592,7 @@ function Ballistics.aimAdjust(origin, target, speed, gravity)
 end
 
 return Ballistics
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX28"><Properties><string name="Name">GunPreset</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000000D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">GunPreset</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	GunPreset.luau
 	Как выглядит "правильная" модель оружия для этого стенда + хелперы,
@@ -713,7 +713,7 @@ end
 ]]
 function GunPreset.computeScale(model: Instance): number
 	local size = GunPreset.computeSize(model)
-	if size.Magnitude &lt;= 0 then
+	if size.Magnitude <= 0 then
 		return 1
 	end
 	local longest = math.max(size.X, size.Y, size.Z)
@@ -728,7 +728,7 @@ end
 	и сварки, и Attachment'ы. Если API недоступен — откат на ручной вариант.
 ]]
 function GunPreset.applyScale(model: Instance, scale: number)
-	if math.abs(scale - 1) &lt; 0.01 then
+	if math.abs(scale - 1) < 0.01 then
 		return
 	end
 
@@ -763,7 +763,7 @@ function GunPreset.applyScale(model: Instance, scale: number)
 end
 
 return GunPreset
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX29"><Properties><string name="Name">Recoil</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000000E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Recoil</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	Recoil.luau
 	Отдача как состояние во времени, а не как разовый нокбек.
@@ -844,7 +844,7 @@ function Recoil:Reset()
 end
 
 return Recoil
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX30"><Properties><string name="Name">Spring</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000000F"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Spring</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	Spring.luau
 	Маленькая пружина (критически задемпфированная) для сглаживания:
@@ -885,24 +885,24 @@ function Spring:Snap(value: number)
 end
 
 return Spring
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX31"><Properties><string name="Name">WeaponConfig</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000010"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponConfig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	WeaponConfig.luau
 	Статы оружия. Читаются из атрибутов на модели оружия, а если атрибутов нет —
 	берётся пресет по названию модели (PM / AK / M4 ...) или общий дефолт.
 
 	Атрибуты на модели (все опциональны, числа/булевы):
-		RoundsPerMinute  number  -&gt; темп стрельбы
-		Damage           number  -&gt; урон
-		HeadshotMult     number  -&gt; множитель за голову
-		MagazineSize     number  -&gt; ёмкость магазина
-		ReloadTime       number  -&gt; секунды перезарядки
-		Spread           number  -&gt; разброс в градусах (стойка)
-		Recoil           number  -&gt; сила отдачи (градусы)
-		Auto             bool    -&gt; автоматический огонь
-		AmmoType         string  -&gt; название патронов для UI
-		AdsFov           number  -&gt; FOV в прицеле
-		Penetration      number  -&gt; 0..1, запас "пробития" (задел под броню)
+		RoundsPerMinute  number  -> темп стрельбы
+		Damage           number  -> урон
+		HeadshotMult     number  -> множитель за голову
+		MagazineSize     number  -> ёмкость магазина
+		ReloadTime       number  -> секунды перезарядки
+		Spread           number  -> разброс в градусах (стойка)
+		Recoil           number  -> сила отдачи (градусы)
+		Auto             bool    -> автоматический огонь
+		AmmoType         string  -> название патронов для UI
+		AdsFov           number  -> FOV в прицеле
+		Penetration      number  -> 0..1, запас "пробития" (задел под броню)
 
 	Так же можно просто поменять пресеты ниже.
 ]]
@@ -1084,11 +1084,11 @@ function WeaponConfig.secondsPerShot(stats: Stats): number
 end
 
 return WeaponConfig
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX32"><Properties><string name="Name">WeaponState</string><ProtectedString name="Source">--!strict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000011"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponState</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!strict
 --[[
 	WeaponState.luau
 	Состояние одного оружия: патроны, магазин, перезарядка, режим огня.
-	Чистая логика без Roblox API -&gt; тестируется в юнит-тестах.
+	Чистая логика без Roblox API -> тестируется в юнит-тестах.
 
 	Один экземпляр на слот инвентаря. Клиент и сервер держат свои экземпляры;
 	сервер — источник истины, клиент предсказывает для отзывчивости.
@@ -1114,22 +1114,22 @@ function WeaponState.new(stats, ammoInMagazine: number?)
 end
 
 function WeaponState:isEmpty(): boolean
-	return self.magazine &lt;= 0
+	return self.magazine <= 0
 end
 
 function WeaponState:isFull(): boolean
-	return self.magazine &gt;= self.stats.MagazineSize
+	return self.magazine >= self.stats.MagazineSize
 end
 
 function WeaponState:canFire(now: number): (boolean, string?)
 	if self.reloading then
 		return false, "Reloading"
 	end
-	if self.magazine &lt;= 0 then
+	if self.magazine <= 0 then
 		return false, "Empty"
 	end
 	local interval = 60 / math.max(self.stats.RoundsPerMinute, 1)
-	if now - self.lastShotAt &lt; interval then
+	if now - self.lastShotAt < interval then
 		return false, "FireRate"
 	end
 	-- Полуавтомат: нужен отпущенный и снова нажатый курок.
@@ -1156,7 +1156,7 @@ function WeaponState:resetShotPattern()
 end
 
 function WeaponState:startReload(now: number): boolean
-	if self.reloading or self:isFull() or self.reserve &lt;= 0 then
+	if self.reloading or self:isFull() or self.reserve <= 0 then
 		return false
 	end
 	self.reloading = true
@@ -1166,7 +1166,7 @@ end
 
 --[[ Вызывается каждый кадр. Возвращает true, если перезарядка только что завершилась. ]]
 function WeaponState:update(now: number): boolean
-	if self.reloading and now &gt;= self.reloadEndsAt then
+	if self.reloading and now >= self.reloadEndsAt then
 		local needed = self.stats.MagazineSize - self.magazine
 		local taken = math.min(needed, self.reserve)
 		self.magazine += taken
@@ -1183,14 +1183,14 @@ function WeaponState:reloadProgress(now: number): number
 		return 1
 	end
 	local total = self.stats.ReloadTime
-	if total &lt;= 0 then
+	if total <= 0 then
 		return 1
 	end
 	return math.clamp(1 - (self.reloadEndsAt - now) / total, 0, 1)
 end
 
 return WeaponState
-</ProtectedString></Properties></Item></Item></Item><Item class="Folder" referent="RBX35"><Properties><string name="Name">WeaponModels</string></Properties></Item></Item><Item class="ServerScriptService" referent="RBX39"><Properties><string name="Name">ServerScriptService</string></Properties><Item class="Script" referent="RBX14"><Properties><string name="Name">ServerBoot</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="Folder" referent="RBX00000000000000000000000000000014"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">WeaponModels</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties></Item></Item><Item class="ServerScriptService" referent="RBX0000000000000000000000000000001C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">ServerScriptService</string></Properties><Item class="Script" referent="RBX00000000000000000000000000000016"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ServerBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	HardOut — серверная точка входа.
 	Поднимает сеть, полигон и (опционально) модели оружия для теста.
@@ -1207,7 +1207,17 @@ end
 local Config = require(HardOut:WaitForChild("Config"))
 local Net = require(HardOut:WaitForChild("Net"):WaitForChild("Remotes"))
 
-local Modules = script:WaitForChild("Modules")
+-- Папка Modules лежит РЯДОМ со скриптом (сиблинг), а не внутри него.
+-- Важно: не block-им поток навсегда — иначе полигон не построится и будет "пусто".
+local Modules = script.Parent and script.Parent:FindFirstChild("Modules")
+if not Modules then
+	warn(
+		"[HardOut] НЕ НАЙДЕНА папка Modules рядом с ServerBoot. "
+			.. "Скрипт должен лежать в ServerScriptService вместе с папкой Modules."
+	)
+	return
+end
+
 local CombatService = require(Modules:WaitForChild("CombatService"))
 local TestRange = require(Modules:WaitForChild("TestRange"))
 local RaidSandbox = require(Modules:WaitForChild("RaidSandbox"))
@@ -1251,7 +1261,7 @@ RaidSandbox.initialize()
 if Config.Debug.Verbose then
 	print("[HardOut] Сервер готов. Оружие кладётся в ReplicatedStorage.WeaponModels.")
 end
-</ProtectedString></Properties></Item><Item class="Folder" referent="RBX19"><Properties><string name="Name">Modules</string></Properties><Item class="ModuleScript" referent="RBX15"><Properties><string name="Name">CombatService</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX0000000000000000000000000000001B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX00000000000000000000000000000017"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CombatService</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	CombatService.luau
 	Серверная сторона стрельбы: единственное место, где считается урон.
@@ -1324,7 +1334,7 @@ function CombatService.handleFire(player, payload)
 	local character = player.Character
 	local head = character and character:FindFirstChild("Head")
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-	if not (head and humanoid and humanoid.Health &gt; 0) then
+	if not (head and humanoid and humanoid.Health > 0) then
 		return
 	end
 
@@ -1336,29 +1346,29 @@ function CombatService.handleFire(player, payload)
 	local state = getState(player)
 	local now = os.clock()
 	local interval = (60 / math.max(stats.RoundsPerMinute, 1)) * FIRE_RATE_GRACE
-	if now - state.lastShotAt &lt; interval then
+	if now - state.lastShotAt < interval then
 		return
 	end
 	state.lastShotAt = now
 
 	-- 2. Грубый лимит выстрелов в минуту (защита от "спидрана").
-	if now - state.minuteStartedAt &gt; 1 then
+	if now - state.minuteStartedAt > 1 then
 		state.minuteStartedAt = now
 		state.shotCount = 0
 	end
 	state.shotCount += 1
-	if state.shotCount &gt; MAX_SHOTS_PER_SECOND then
+	if state.shotCount > MAX_SHOTS_PER_SECOND then
 		return
 	end
 
 	-- 3. Origin должен быть у головы (нельзя стрелять из-за стены с другого конца карты).
-	if (payload.origin - head.Position).Magnitude &gt; ORIGIN_TOLERANCE then
+	if (payload.origin - head.Position).Magnitude > ORIGIN_TOLERANCE then
 		return
 	end
 
 	-- 4. Направление нормируем сами (клиент не может "продлить" пулю).
 	local direction = payload.direction
-	if direction.Magnitude &lt; 0.1 then
+	if direction.Magnitude < 0.1 then
 		return
 	end
 	direction = direction.Unit
@@ -1393,7 +1403,7 @@ function CombatService.handleFire(player, payload)
 	if result.Hit and result.Instance then
 		local victimModel = result.Instance:FindFirstAncestorOfClass("Model")
 		local victimHumanoid = victimModel and victimModel:FindFirstChildOfClass("Humanoid")
-		if victimHumanoid and victimHumanoid.Health &gt; 0 then
+		if victimHumanoid and victimHumanoid.Health > 0 then
 			victimHumanoid:TakeDamage(result.Damage)
 		end
 	end
@@ -1432,7 +1442,7 @@ function CombatService.initialize()
 end
 
 return CombatService
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX16"><Properties><string name="Name">RaidSandbox</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000018"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">RaidSandbox</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	RaidSandbox.luau
 	Заготовка "рейдового" слоя в духе Таркова — пока без бэкенда, но с реальными
@@ -1459,9 +1469,9 @@ local Players = game:GetService("Players")
 
 local RaidSandbox = {}
 
--- 0 кг -&gt; 1.0, 40 кг -&gt; ~0.62 (тяжёлый рюкзак реально замедляет).
+-- 0 кг -> 1.0, 40 кг -> ~0.62 (тяжёлый рюкзак реально замедляет).
 local WEIGHT_SPEED_FALLOFF = 0.0095
--- Вес добавляет разброс: 50 кг -&gt; +35%.
+-- Вес добавляет разброс: 50 кг -> +35%.
 local WEIGHT_SPREAD_FACTOR = 0.35
 
 type Condition = {
@@ -1497,7 +1507,7 @@ function RaidSandbox.conditionMultiplier(condition: Condition?): number
 		multiplier *= 0.85
 	end
 	local stamina = condition.stamina
-	if type(stamina) == "number" and stamina &lt; 30 then
+	if type(stamina) == "number" and stamina < 30 then
 		multiplier *= 0.8
 	end
 	return multiplier
@@ -1585,7 +1595,7 @@ function RaidSandbox.initialize()
 end
 
 return RaidSandbox
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX17"><Properties><string name="Name">SampleWeapon</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000019"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">SampleWeapon</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	SampleWeapon.luau
 	Демо-оружие "HYBRID-9": процедурная заготовка из Parts, повторяющая ровно тот
@@ -1740,7 +1750,7 @@ function SampleWeapon.install(folder)
 end
 
 return SampleWeapon
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX18"><Properties><string name="Name">TestRange</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000001A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">TestRange</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	TestRange.luau
 	Тестовый полигон, который строится кодом при старте сервера.
@@ -2020,11 +2030,30 @@ function TestRange.build()
 	spawnLocation.Parent = map
 
 	map.Parent = workspace
+
+	-- Страховка: если персонаж каким-то образом оказался под полом (спавн в
+	-- пустоте, старый сейв), возвращаем его в зону. Это же спасает от "падаю".
+	local Players = game:GetService("Players")
+	local floorTop = 0
+	Players.PlayerAdded:Connect(function(player)
+		player.CharacterAdded:Connect(function(character)
+			local root = character:WaitForChild("HumanoidRootPart", 10)
+			if not root then
+				return
+			end
+			task.delay(1.5, function()
+				if root.Parent and root.Position.Y < floorTop - 15 then
+					root.CFrame = CFrame.new(0, 6, 38)
+				end
+			end)
+		end)
+	end)
+
 	return map
 end
 
 return TestRange
-</ProtectedString></Properties></Item></Item></Item><Item class="StarterPlayer" referent="RBX13"><Properties><string name="Name">StarterPlayer</string><float name="CameraMaxZoomDistance">0.5</float><float name="CameraMinZoomDistance">0.5</float><float name="CharacterWalkSpeed">8</float><float name="CharacterJumpPower">42</float><bool name="CharacterUseJumpPower">true</bool><bool name="EnableMouseLockOption">false</bool></Properties><Item class="StarterPlayerScripts" referent="RBX12"><Properties><string name="Name">StarterPlayerScripts</string></Properties><Item class="LocalScript" referent="RBX1"><Properties><string name="Name">ClientBoot</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="StarterPlayer" referent="RBX00000000000000000000000000000029"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayer</string><float name="CameraMaxZoomDistance">0.5</float><float name="CameraMinZoomDistance">0.5</float><float name="CharacterWalkSpeed">8</float><float name="CharacterJumpPower">42</float><bool name="CharacterUseJumpPower">true</bool><bool name="EnableMouseLockOption">false</bool></Properties><Item class="StarterPlayerScripts" referent="RBX00000000000000000000000000000028"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayerScripts</string></Properties><Item class="LocalScript" referent="RBX0000000000000000000000000000001D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ClientBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	HardOut — клиентская точка входа.
 	Запускает HUD, контроллер игрока (камера + руки/ноги) и оружие.
@@ -2035,7 +2064,14 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local Modules = script:WaitForChild("Modules")
+-- Папка Modules — рядом с ClientBoot (внутри StarterPlayerScripts).
+local Modules = script.Parent and script.Parent:FindFirstChild("Modules")
+if not Modules then
+	warn(
+		"[HardOut] НЕ НАЙДЕНА папка Modules рядом с ClientBoot (ожидается внутри StarterPlayerScripts)."
+	)
+	return
+end
 local CharacterSetup = require(Modules:WaitForChild("CharacterSetup"))
 local Hud = require(Modules:WaitForChild("Hud"))
 local PlayerController = require(Modules:WaitForChild("PlayerController"))
@@ -2055,7 +2091,7 @@ local weaponController = WeaponController.new(controller)
 Tracers.initialize()
 
 print("[HardOut] Клиент готов: вид от первого лица, руки/ноги, HUD.")
-</ProtectedString></Properties></Item><Item class="Folder" referent="RBX11"><Properties><string name="Name">Modules</string></Properties><Item class="ModuleScript" referent="RBX2"><Properties><string name="Name">Camera</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX00000000000000000000000000000027"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX0000000000000000000000000000001E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Camera</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Camera.luau
 	Камера от первого лица, полностью управляемая скриптом.
@@ -2066,7 +2102,7 @@ print("[HardOut] Клиент готов: вид от первого лица, �
 	  * наклон в стрейфе и покачивание головы.
 
 	Важно: углы обзора (lookAngles) хранятся здесь и НЕ зависят от Humanoid,
-	поэтому не возникает петли "камера -&gt; поворот персонажа -&gt; камера".
+	поэтому не возникает петли "камера -> поворот персонажа -> камера".
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -2161,7 +2197,7 @@ function Camera:update(dt)
 
 	local bob = Config.Camera.HeadBob
 	local bobY, bobRoll, bobX = 0, 0, 0
-	if bob.Enabled and self.speed &gt; 0.5 then
+	if bob.Enabled and self.speed > 0.5 then
 		self.bobPhase += dt * (bob.Frequency * math.sqrt(self.speed / Config.Movement.WalkSpeed)) * math.pi * 2
 		local amount = math.clamp(self.speed / Config.Movement.WalkSpeed, 0, 1.6)
 		bobY = math.abs(math.sin(self.bobPhase)) * bob.Amplitude * amount
@@ -2198,7 +2234,7 @@ function Camera:getAimFactor()
 end
 
 return Camera
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX3"><Properties><string name="Name">CharacterSetup</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000001F"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterSetup</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	CharacterSetup.luau
 	Приводит стандартный персонаж в состояние, нужное для FPS-стенда:
@@ -2286,7 +2322,7 @@ function CharacterSetup.start()
 end
 
 return CharacterSetup
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX4"><Properties><string name="Name">FirstPersonRig</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000020"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">FirstPersonRig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	FirstPersonRig.luau
 	Руки и ноги от первого лица.
@@ -2355,7 +2391,7 @@ end
 local function placeSegment(part, from, to)
 	local delta = to - from
 	local length = delta.Magnitude
-	if length &lt; 0.001 then
+	if length < 0.001 then
 		part.CFrame = CFrame.lookAt(from + delta * 0.5, to) * CFrame.Angles(0, 0, 0)
 		return
 	end
@@ -2639,7 +2675,7 @@ function FirstPersonRig:destroy()
 end
 
 return FirstPersonRig
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX5"><Properties><string name="Name">Hud</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000021"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Hud</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Hud.luau
 	Минималистичный HUD в духе Таркова: точка/крестик, патроны, слоты,
@@ -2879,12 +2915,12 @@ end
 
 function Hud:setAmmo(current, maximum)
 	self.ammoLabel.Text = string.format("%d / %d", current, maximum)
-	local low = current &lt;= math.max(1, math.floor(maximum * 0.25))
+	local low = current <= math.max(1, math.floor(maximum * 0.25))
 	self.ammoLabel.TextColor3 = low and COLOR_DANGER or COLOR_TEXT
 end
 
 function Hud:setReload(reloading, progress)
-	self.reloadBar.Visible = reloading == true and progress &lt; 1
+	self.reloadBar.Visible = reloading == true and progress < 1
 	self.reloadFill.Size = UDim2.fromScale(math.clamp(progress or 0, 0, 1), 1)
 end
 
@@ -2906,7 +2942,7 @@ function Hud:setAim(aimFactor)
 end
 
 return Hud
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX6"><Properties><string name="Name">Input</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000022"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Input</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Input.luau
 	Единая точка ввода. Держит состояние кнопок и раздаёт события
@@ -3026,7 +3062,7 @@ function Input.start()
 end
 
 return Input
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX7"><Properties><string name="Name">PlayerController</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000023"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">PlayerController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	PlayerController.luau
 	Связывает всё воедино: камера, ViewModel, ввод, движение, обновления по кадрам.
@@ -3126,11 +3162,11 @@ end
 --[[ Прыжок свой: у дефолтного ControlModule он отключён вместе с модулем. ]]
 function PlayerController:tryJump()
 	local humanoid = self.humanoid
-	if not humanoid or humanoid.Health &lt;= 0 then
+	if not humanoid or humanoid.Health <= 0 then
 		return
 	end
 	local now = os.clock()
-	if now - (self.lastJumpAt or 0) &lt; 0.35 then
+	if now - (self.lastJumpAt or 0) < 0.35 then
 		return
 	end
 	local state = humanoid:GetState()
@@ -3176,7 +3212,7 @@ function PlayerController:updateCharacterRotation(dt)
 		return
 	end
 	local flatLook = workspace.CurrentCamera.CFrame.LookVector * Vector3.new(1, 0, 1)
-	if flatLook.Magnitude &lt; 0.01 then
+	if flatLook.Magnitude < 0.01 then
 		return
 	end
 	local targetCFrame = CFrame.lookAt(humanoid.RootPart.Position, humanoid.RootPart.Position + flatLook.Unit)
@@ -3186,7 +3222,7 @@ end
 
 function PlayerController:updateMovement(dt)
 	local humanoid = self.humanoid
-	if not humanoid or humanoid.Health &lt;= 0 then
+	if not humanoid or humanoid.Health <= 0 then
 		self.speed = 0
 		return
 	end
@@ -3207,7 +3243,7 @@ function PlayerController:updateMovement(dt)
 
 	local camera = workspace.CurrentCamera
 	local flatLook = camera.CFrame.LookVector * Vector3.new(1, 0, 1)
-	if flatLook.Magnitude &lt; 0.01 then
+	if flatLook.Magnitude < 0.01 then
 		flatLook = Vector3.new(0, 0, -1)
 	else
 		flatLook = flatLook.Unit
@@ -3215,7 +3251,7 @@ function PlayerController:updateMovement(dt)
 	local flatRight = flatLook:Cross(Vector3.new(0, 1, 0))
 
 	local worldMove = flatLook * -moveZ + flatRight * moveX
-	if worldMove.Magnitude &gt; 0 then
+	if worldMove.Magnitude > 0 then
 		worldMove = worldMove.Unit
 	end
 
@@ -3225,7 +3261,7 @@ function PlayerController:updateMovement(dt)
 		targetSpeed = Config.Movement.CrouchSpeed
 	elseif self.isAiming then
 		targetSpeed = Config.Movement.AimWalkSpeed
-	elseif self.isSprinting and moveZ &lt; 0 then
+	elseif self.isSprinting and moveZ < 0 then
 		targetSpeed = Config.Movement.SprintSpeed
 	end
 
@@ -3237,7 +3273,7 @@ function PlayerController:updateMovement(dt)
 	self.walkSpeed += (targetSpeed - self.walkSpeed) * math.clamp(dt * rate, 0, 1)
 
 	humanoid.WalkSpeed = self.walkSpeed
-	humanoid:Move(worldMove * (worldMove.Magnitude &gt; 0 and 1 or 0), false)
+	humanoid:Move(worldMove * (worldMove.Magnitude > 0 and 1 or 0), false)
 
 	-- Присед: уменьшаем HipHeight, чтобы модель реально опускалась.
 	local targetHip = self.isCrouching and 1.2 or 2
@@ -3276,7 +3312,7 @@ function PlayerController:setAdsFov(fov)
 end
 
 return PlayerController
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX8"><Properties><string name="Name">Tracers</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000024"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Tracers</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Tracers.luau
 	Визуал выстрелов: трассер (линия от ствола до попадания), вспышка в точке удара.
@@ -3308,7 +3344,7 @@ end
 local function spawnTracer(from, to)
 	local delta = to - from
 	local length = delta.Magnitude
-	if length &lt; 0.5 then
+	if length < 0.5 then
 		return
 	end
 
@@ -3393,7 +3429,7 @@ function Tracers.initialize()
 end
 
 return Tracers
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX9"><Properties><string name="Name">WeaponController</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000025"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	WeaponController.luau
 	Оружие в руках на клиенте: слоты, экипировка, стрельба, перезарядка, эффекты.
@@ -3601,7 +3637,7 @@ function WeaponController:tryFire()
 	local now = os.clock()
 	local canFire = self.state:canFire(now)
 	if not canFire then
-		if self.state.magazine &lt;= 0 and not self.state.reloading then
+		if self.state.magazine <= 0 and not self.state.reloading then
 			self:reload()
 		end
 		return
@@ -3701,7 +3737,7 @@ function WeaponController:update(dt)
 end
 
 return WeaponController
-</ProtectedString></Properties></Item><Item class="ModuleScript" referent="RBX10"><Properties><string name="Name">WeaponHolder</string><ProtectedString name="Source">--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000026"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponHolder</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	WeaponHolder.luau
 	ЗАГОТОВКА ПОД ОРУЖИЕ — здесь модель пушки превращается в "оружие в руках".
@@ -3709,7 +3745,7 @@ return WeaponController
 	Что делает по шагам:
 	  1. Клонирует модель из ReplicatedStorage.WeaponModels.
 	  2. Ищет сокеты Grip / Support / Muzzle / Sight (см. docs/HANDS_AND_GUN.md).
-	  3. Мягко чинит проблемы: нет Grip -&gt; цепляем по центру + warn.
+	  3. Мягко чинит проблемы: нет Grip -> цепляем по центру + warn.
 	  4. Опционально масштабирует под эталон (Config.Weapons.AutoScale).
 	  5. Жёстко привязывает модель к правой кисти через Weld
 	     (обе части неанкоренные, поэтому оружие честно едет за рукой).
@@ -3728,7 +3764,7 @@ local WeaponConfig = require(WeaponFolder:WaitForChild("WeaponConfig"))
 local WeaponHolder = {}
 WeaponHolder.__index = WeaponHolder
 
---[[ Путь "ReplicatedStorage.WeaponModels" -&gt; Instance. ]]
+--[[ Путь "ReplicatedStorage.WeaponModels" -> Instance. ]]
 function WeaponHolder.resolveWeaponFolder()
 	local current = game :: any
 	for segment in string.gmatch(Config.Weapons.FolderPath, "[^%.]+") do
@@ -3754,7 +3790,7 @@ function WeaponHolder.listWeapons()
 		end
 	end
 	table.sort(weapons, function(a, b)
-		return a.Name &lt; b.Name
+		return a.Name < b.Name
 	end)
 	return weapons
 end
@@ -3775,7 +3811,7 @@ function WeaponHolder.report(weapon)
 			string.format(
 				"[HardOut] Модель '%s' OK. Сокеты: %s",
 				weapon.Name,
-				#names &gt; 0 and table.concat(names, ", ") or "нет"
+				#names > 0 and table.concat(names, ", ") or "нет"
 			)
 		)
 	end
@@ -3913,5 +3949,5 @@ function WeaponHolder:destroy()
 end
 
 return WeaponHolder
-</ProtectedString></Properties></Item></Item></Item></Item><Item class="Players" referent="RBX40"><Properties><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX41"><Properties><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item></Item><Item class="Players" referent="RBX0000000000000000000000000000002A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX0000000000000000000000000000002B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
 </roblox>

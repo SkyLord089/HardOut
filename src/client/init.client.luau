@@ -9,7 +9,14 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local Modules = script:WaitForChild("Modules")
+-- Папка Modules — рядом с ClientBoot (внутри StarterPlayerScripts).
+local Modules = script.Parent and script.Parent:FindFirstChild("Modules")
+if not Modules then
+	warn(
+		"[HardOut] НЕ НАЙДЕНА папка Modules рядом с ClientBoot (ожидается внутри StarterPlayerScripts)."
+	)
+	return
+end
 local CharacterSetup = require(Modules:WaitForChild("CharacterSetup"))
 local Hud = require(Modules:WaitForChild("Hud"))
 local PlayerController = require(Modules:WaitForChild("PlayerController"))
