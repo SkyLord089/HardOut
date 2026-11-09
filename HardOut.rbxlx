@@ -237,6 +237,10 @@ Config.Camera = {
 
 	-- Смещение глаз относительно головы персонажа.
 	EyeOffset = Vector3.new(0, 0.35, 0),
+
+	-- Насколько камера выдвинута вперёд из головы (studs).
+	-- 0 = камера внутри головы (тело почти не видно), 0.5-0.8 = видно торс/живот.
+	EyeForward = 0.6,
 }
 
 --[[ Руки и ноги от первого лица ]]
@@ -255,6 +259,10 @@ Config.ViewModel = {
 
 	-- Прятать голову и головные аксессуары (шляпы/маски), чтобы не закрывали обзор.
 	HideHead = true,
+
+	-- ВИДЕТЬ СВОЁ ТЕЛО от первого лица (руки, ноги, живот/торс).
+	-- false -> штатное поведение Roblox: тело локально прозрачное.
+	ShowBody = true,
 }
 
 --[[ Оружие в руках ]]
@@ -2076,7 +2084,7 @@ function TestRange.build()
 end
 
 return TestRange
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="StarterPlayer" referent="RBX0000000000000000000000000000002A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayer</string><float name="CameraMaxZoomDistance">0.5</float><float name="CameraMinZoomDistance">0.5</float><float name="CharacterWalkSpeed">8</float><float name="CharacterJumpPower">42</float><bool name="CharacterUseJumpPower">true</bool><bool name="EnableMouseLockOption">false</bool></Properties><Item class="StarterPlayerScripts" referent="RBX00000000000000000000000000000029"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayerScripts</string></Properties><Item class="LocalScript" referent="RBX0000000000000000000000000000001D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ClientBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="StarterPlayer" referent="RBX0000000000000000000000000000002B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayer</string><float name="CameraMaxZoomDistance">0.5</float><float name="CameraMinZoomDistance">0.5</float><float name="CharacterWalkSpeed">8</float><float name="CharacterJumpPower">42</float><bool name="CharacterUseJumpPower">true</bool><bool name="EnableMouseLockOption">false</bool></Properties><Item class="StarterPlayerScripts" referent="RBX0000000000000000000000000000002A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayerScripts</string></Properties><Item class="LocalScript" referent="RBX0000000000000000000000000000001D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ClientBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	HardOut — клиентская точка входа.
 	Запускает HUD, контроллер игрока (камера + руки/ноги) и оружие.
@@ -2109,12 +2117,16 @@ if not Modules then
 	return
 end
 local CharacterSetup = require(Modules:WaitForChild("CharacterSetup"))
+local CharacterTransparency = require(Modules:WaitForChild("CharacterTransparency"))
 local Hud = require(Modules:WaitForChild("Hud"))
 local PlayerController = require(Modules:WaitForChild("PlayerController"))
 local WeaponController = require(Modules:WaitForChild("WeaponController"))
 local Tracers = require(Modules:WaitForChild("Tracers"))
 
 CharacterSetup.start()
+
+-- Тело (руки/ноги/живот) должно быть видно от первого лица.
+CharacterTransparency.initialize()
 
 local hud = Hud.new()
 if Config.Camera.ShowCrosshair == false then
@@ -2130,7 +2142,7 @@ local weaponController = WeaponController.new(controller)
 Tracers.initialize()
 
 print("[HardOut] Клиент готов: вид от первого лица, руки/ноги, HUD.")
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX00000000000000000000000000000028"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX0000000000000000000000000000001E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Camera</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX00000000000000000000000000000029"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX0000000000000000000000000000001E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Camera</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Camera.luau
 	Камера от первого лица, полностью управляемая скриптом.
@@ -2250,7 +2262,11 @@ function Camera:update(dt)
 	self.leanAngle += (self.leanTarget * Config.Camera.LeanAngle - self.leanAngle) * math.clamp(dt * 10, 0, 1)
 
 	local crouchOffset = self.isCrouching and -0.5 or 0
-	local origin = head.Position + Config.Camera.EyeOffset + Vector3.new(bobX, bobY + crouchOffset, 0)
+	-- Камера чуть впереди головы: иначе она окажется внутри тела, и торс/живот
+	-- не будут видны при взгляде вниз (а near-plane срежет шею).
+	local forward = Config.Camera.EyeForward or 0.6
+	local ahead = Vector3.new(-math.sin(math.rad(self.smoothedAngles.X)), 0, -math.cos(math.rad(self.smoothedAngles.X)))
+	local origin = head.Position + Config.Camera.EyeOffset + ahead * forward + Vector3.new(bobX, bobY + crouchOffset, 0)
 
 	-- Мягкое сглаживание: камера чуть "догоняет" мышь (не резкие рывки).
 	local smooth = Config.Camera.Smoothing or 0.35
@@ -2358,41 +2374,15 @@ function CharacterRig.new(character: Instance)
 	return self
 end
 
---[[ Прячем голову/аксессуары локально: LocalTransparencyModifier не реплицируется. ]]
+--[[ Видимостью тела управляет CharacterTransparency: она показывает руки/ноги/торс
+     и прячет только голову. Здесь ничего не трогаем, чтобы не спорить с ней. ]]
 function CharacterRig:hideHead()
-	if not Config.ViewModel.HideHead then
-		return
-	end
-
-	local function hide(instance: Instance)
-		if not instance:IsA("BasePart") then
-			return
-		end
-		local shouldHide = HEAD_NAMES[instance.Name] == true
-		-- Аксессуары: их части лежат внутри Accessory; прячем по предку.
-		if not shouldHide and instance:FindFirstAncestorOfClass("Accessory") then
-			shouldHide = true
-		end
-		if shouldHide then
-			instance.LocalTransparencyModifier = 1
-			self.hidden[instance] = true
-		end
-	end
-
-	for _, descendant in self.character:GetDescendants() do
-		hide(descendant)
-	end
-
-	-- Аксессуары могут добавиться позже (загрузка аватара).
-	self.connection = self.character.DescendantAdded:Connect(function(descendant)
-		task.defer(hide, descendant)
-	end)
+	-- намеренно пусто: см. CharacterTransparency.luau
 end
 
 --[[ Штатные анимации должны играть: это и есть "анимации персонажа". ]]
 function CharacterRig:prepare()
 	self.handPart = findHand(self.character)
-	self:hideHead()
 
 	local animate = self.character:FindFirstChild("Animate")
 	if animate and animate:IsA("LocalScript") then
@@ -2474,33 +2464,30 @@ local player = Players.LocalPlayer
 local CharacterSetup = {}
 
 local function disableDefaultControls()
-	-- Эти скрипты создаются движком в PlayerScripts. Отключаем, а не удаляем:
-	-- так меньше шансов сломать что-то в будущем.
+	-- Эти скрипты созданы движком в PlayerScripts. Важно: PlayerModule —
+	-- это ModuleScript, у него НЕТ свойства Disabled (попытка его выставить
+	-- падает с ошибкой). Поэтому PlayerModule мы НЕ отключаем: он нужен для
+	-- работы камеры/контроллов, а его "скрытие тела в первом лице" мы
+	-- перебиваем каждый кадр в CharacterTransparency.
 	local playerScripts = player:WaitForChild("PlayerScripts")
-	local names = {
-		"PlayerModule",
-		"ControlModule",
-		"CameraModule",
-	}
 
 	local function disable(instance)
-		if instance:IsA("LuaSourceContainer") then
-			instance.Disabled = true
+		-- Отключаем только то, что реально имеет Disabled (LocalScript/Script).
+		if instance:IsA("LocalScript") or instance:IsA("Script") then
+			pcall(function()
+				instance.Disabled = true
+			end)
 		end
 	end
 
-	for _, name in names do
+	-- ControlModule/CameraModule лежат внутри PlayerModule и обычно тоже
+	-- ModuleScript'ы — их не трогаем (см. комментарий выше).
+	for _, name in { "ControlModule", "CameraModule" } do
 		local existing = playerScripts:FindFirstChild(name)
 		if existing then
 			disable(existing)
 		end
 	end
-
-	playerScripts.ChildAdded:Connect(function(child)
-		if table.find(names, child.Name) then
-			task.defer(disable, child)
-		end
-	end)
 end
 
 local function prepareCharacter(character)
@@ -2517,6 +2504,37 @@ local function prepareCharacter(character)
 	-- Стандартные "прыжки" от Roblox ControlModule отключены вместе с модулем,
 	-- поэтому прыжок обрабатывается в PlayerController.
 	humanoid.WalkSpeed = 0 -- скоростью управляет PlayerController
+
+	-- Тело должно быть видно: включаем (выключается в Config.ViewModel.ShowBody).
+	local bodyParts = {
+		"Head",
+		"Torso",
+		"UpperTorso",
+		"LowerTorso",
+		"Left Arm",
+		"Right Arm",
+		"Left Leg",
+		"Right Leg",
+		"LeftUpperArm",
+		"RightUpperArm",
+		"LeftUpperLeg",
+		"RightUpperLeg",
+		"LeftLowerArm",
+		"RightLowerArm",
+		"LeftLowerLeg",
+		"RightLowerLeg",
+		"LeftHand",
+		"RightHand",
+		"LeftFoot",
+		"RightFoot",
+	}
+	for _, partName in bodyParts do
+		local part = character:FindFirstChild(partName)
+		if part and part:IsA("BasePart") then
+			-- LocalTransparencyModifier — то, чем движок прячет тело в 1-м лице.
+			part.LocalTransparencyModifier = part.Name == "Head" and 1 or 0
+		end
+	end
 end
 
 function CharacterSetup.start()
@@ -2540,7 +2558,168 @@ function CharacterSetup.start()
 end
 
 return CharacterSetup
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000021"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">FirstPersonRig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000021"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterTransparency</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+--[[
+	CharacterTransparency.luau
+	Отвечает за ВИДИМОСТЬ ТЕЛА своего персонажа от первого лица.
+
+	Проблема, которую решает:
+	  Дефолтный PlayerModule Roblox в первом лице сам делает части тела локально
+	  прозрачными (через LocalTransparencyModifier) — и руки, и ноги, и торс
+	  «исчезают». Поэтому изнутри видно только оружие, а тела нет.
+
+	Решение:
+	  * отключаем локальную прозрачность (Transparency = 0 у всех частей);
+	  * глушим дефолтный скрипт, который её ставит (см. CharacterSetup);
+	  * каждый кадр ПОДДЕРЖИВАЕМ видимость — на случай, если кто-то (движок,
+	    другая система) снова выставит модификатор;
+	  * прячем только голову и головные аксессуары, чтобы не загораживали обзор;
+	  * вернуть штатное поведение: Config.ViewModel.HideBodyInFirstPerson = true.
+
+	Почему LocalTransparencyModifier, а не Transparency:
+	  модификатор виден только локально и не ломает вид персонажа для других
+	  игроков/сервера.
+]]
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local HardOut = ReplicatedStorage:WaitForChild("HardOut")
+local Config = require(HardOut:WaitForChild("Config"))
+
+local CharacterTransparency = {}
+
+local player = Players.LocalPlayer
+
+-- Части, которые нельзя прятать: в них камера и по ним стреляют.
+local NEVER_HIDE = {
+	HumanoidRootPart = true,
+}
+
+local function isHeadPart(instance: Instance): boolean
+	if instance.Name == "Head" then
+		return true
+	end
+	-- Шляпы, маски, очки: их части лежат внутри Accessory.
+	return instance:FindFirstAncestorOfClass("Accessory") ~= nil
+end
+
+local function shouldHide(instance: BasePart): boolean
+	if NEVER_HIDE[instance.Name] then
+		return false
+	end
+	if not Config.ViewModel.HideHead then
+		return false
+	end
+	return isHeadPart(instance)
+end
+
+local function applyTo(character: Instance)
+	if not Config.ViewModel.ShowBody then
+		return -- пользователь хочет штатное поведение Roblox (тело скрыто)
+	end
+
+	local function update(instance: Instance)
+		if not instance:IsA("BasePart") then
+			return
+		end
+		if shouldHide(instance) then
+			instance.LocalTransparencyModifier = 1
+		else
+			-- Ключевая строка: возвращаем тело в кадр.
+			instance.LocalTransparencyModifier = 0
+		end
+	end
+
+	for _, descendant in character:GetDescendants() do
+		update(descendant)
+	end
+
+	return update
+end
+
+function CharacterTransparency.initialize()
+	local activeCharacter = nil
+	local updatePart = nil
+	local connections = {}
+
+	local function clearConnections()
+		for _, connection in connections do
+			connection:Disconnect()
+		end
+		table.clear(connections)
+	end
+
+	local function bind(character: Instance)
+		clearConnections()
+		activeCharacter = character
+		updatePart = applyTo(character)
+		if not updatePart then
+			return
+		end
+
+		-- Новые части (загрузка аксессуаров, смена аватара, респавн частей).
+		table.insert(
+			connections,
+			character.DescendantAdded:Connect(function(descendant)
+				task.defer(updatePart, descendant)
+			end)
+		)
+	end
+
+	if player.Character then
+		bind(player.Character)
+	end
+	player.CharacterAdded:Connect(function(character)
+		-- Ждём Humanoid: части появляются не мгновенно.
+		character:WaitForChild("Humanoid", 10)
+		task.wait(0.1)
+		bind(character)
+	end)
+
+	-- Страховка: если движок снова спрятал тело — возвращаем видимость.
+	-- (дешёвая проверка раз в кадр, только по нескольким ключевым частям)
+	RunService.Heartbeat:Connect(function()
+		if not updatePart or not activeCharacter or not activeCharacter.Parent then
+			return
+		end
+		if not Config.ViewModel.ShowBody then
+			return
+		end
+		for _, partName in
+			{
+				"Torso",
+				"UpperTorso",
+				"LowerTorso",
+				"Left Arm",
+				"Right Arm",
+				"Left Leg",
+				"Right Leg",
+				"LeftUpperArm",
+				"RightUpperArm",
+				"LeftUpperLeg",
+				"RightUpperLeg",
+				"LeftLowerArm",
+				"RightLowerArm",
+				"LeftLowerLeg",
+				"RightLowerLeg",
+				"LeftFoot",
+				"RightFoot",
+				"LeftHand",
+				"RightHand",
+			}
+		do
+			local part = activeCharacter:FindFirstChild(partName)
+			if part and part:IsA("BasePart") and part.LocalTransparencyModifier > 0.05 and not shouldHide(part) then
+				part.LocalTransparencyModifier = 0
+			end
+		end
+	end)
+end
+
+return CharacterTransparency
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000022"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">FirstPersonRig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	FirstPersonRig.luau
 	Руки и ноги от первого лица.
@@ -2903,7 +3082,7 @@ function FirstPersonRig:destroy()
 end
 
 return FirstPersonRig
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000022"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Hud</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000023"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Hud</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Hud.luau
 	Минималистичный HUD в духе Таркова: точка/крестик, патроны, слоты,
@@ -3180,7 +3359,7 @@ function Hud:setAim(aimFactor)
 end
 
 return Hud
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000023"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Input</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000024"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Input</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Input.luau
 	Единая точка ввода. Держит состояние кнопок и раздаёт события
@@ -3310,7 +3489,7 @@ function Input.start()
 end
 
 return Input
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000024"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">PlayerController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000025"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">PlayerController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	PlayerController.luau
 	Связывает всё воедино: камера, ViewModel, ввод, движение, обновления по кадрам.
@@ -3579,7 +3758,7 @@ function PlayerController:setAdsFov(fov)
 end
 
 return PlayerController
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000025"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Tracers</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000026"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Tracers</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Tracers.luau
 	Визуал выстрелов: трассер (линия от ствола до попадания), вспышка в точке удара.
@@ -3696,7 +3875,7 @@ function Tracers.initialize()
 end
 
 return Tracers
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000026"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000027"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	WeaponController.luau
 	Оружие в руках на клиенте: слоты, экипировка, стрельба, перезарядка, эффекты.
@@ -4009,7 +4188,7 @@ function WeaponController:update(dt)
 end
 
 return WeaponController
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000027"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponHolder</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000028"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponHolder</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	WeaponHolder.luau
 	ЗАГОТОВКА ПОД ОРУЖИЕ — здесь модель пушки превращается в "оружие в руках".
@@ -4252,5 +4431,5 @@ function WeaponHolder:destroy()
 end
 
 return WeaponHolder
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item></Item><Item class="Players" referent="RBX0000000000000000000000000000002B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX0000000000000000000000000000002C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item></Item><Item class="Players" referent="RBX0000000000000000000000000000002C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX0000000000000000000000000000002D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
 </roblox>

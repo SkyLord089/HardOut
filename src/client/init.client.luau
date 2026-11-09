@@ -31,12 +31,16 @@ if not Modules then
 	return
 end
 local CharacterSetup = require(Modules:WaitForChild("CharacterSetup"))
+local CharacterTransparency = require(Modules:WaitForChild("CharacterTransparency"))
 local Hud = require(Modules:WaitForChild("Hud"))
 local PlayerController = require(Modules:WaitForChild("PlayerController"))
 local WeaponController = require(Modules:WaitForChild("WeaponController"))
 local Tracers = require(Modules:WaitForChild("Tracers"))
 
 CharacterSetup.start()
+
+-- Тело (руки/ноги/живот) должно быть видно от первого лица.
+CharacterTransparency.initialize()
 
 local hud = Hud.new()
 if Config.Camera.ShowCrosshair == false then

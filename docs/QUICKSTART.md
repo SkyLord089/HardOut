@@ -50,7 +50,9 @@ rojo build default.project.json -o HardOut.rbxlx
 | Что | Где | По умолчанию |
 |---|---|---|
 | Руки и ноги — настоящий персонаж со штатными анимациями | `ViewModel.Mode = "Character"` | включено |
+| **Видеть своё тело (руки, ноги, живот)** | `ViewModel.ShowBody` | `true` |
 | Прятать голову/шляпы, чтобы не мешали обзору | `ViewModel.HideHead` | `true` |
+| Насколько камера выдвинута из головы | `Camera.EyeForward` | `0.6` |
 | Курсор мыши в центре экрана | `Camera.HideCursor` | `false` = спрятан |
 | Свой прицел | `Camera.ShowCrosshair` | `false` = без прицела |
 | Покачивание головы | `Camera.HeadBob.Amplitude` | `0.045` (мягко) |

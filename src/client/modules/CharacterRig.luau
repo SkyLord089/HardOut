@@ -70,41 +70,15 @@ function CharacterRig.new(character: Instance)
 	return self
 end
 
---[[ Прячем голову/аксессуары локально: LocalTransparencyModifier не реплицируется. ]]
+--[[ Видимостью тела управляет CharacterTransparency: она показывает руки/ноги/торс
+     и прячет только голову. Здесь ничего не трогаем, чтобы не спорить с ней. ]]
 function CharacterRig:hideHead()
-	if not Config.ViewModel.HideHead then
-		return
-	end
-
-	local function hide(instance: Instance)
-		if not instance:IsA("BasePart") then
-			return
-		end
-		local shouldHide = HEAD_NAMES[instance.Name] == true
-		-- Аксессуары: их части лежат внутри Accessory; прячем по предку.
-		if not shouldHide and instance:FindFirstAncestorOfClass("Accessory") then
-			shouldHide = true
-		end
-		if shouldHide then
-			instance.LocalTransparencyModifier = 1
-			self.hidden[instance] = true
-		end
-	end
-
-	for _, descendant in self.character:GetDescendants() do
-		hide(descendant)
-	end
-
-	-- Аксессуары могут добавиться позже (загрузка аватара).
-	self.connection = self.character.DescendantAdded:Connect(function(descendant)
-		task.defer(hide, descendant)
-	end)
+	-- намеренно пусто: см. CharacterTransparency.luau
 end
 
 --[[ Штатные анимации должны играть: это и есть "анимации персонажа". ]]
 function CharacterRig:prepare()
 	self.handPart = findHand(self.character)
-	self:hideHead()
 
 	local animate = self.character:FindFirstChild("Animate")
 	if animate and animate:IsA("LocalScript") then

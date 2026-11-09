@@ -21,33 +21,30 @@ local player = Players.LocalPlayer
 local CharacterSetup = {}
 
 local function disableDefaultControls()
-	-- Эти скрипты создаются движком в PlayerScripts. Отключаем, а не удаляем:
-	-- так меньше шансов сломать что-то в будущем.
+	-- Эти скрипты созданы движком в PlayerScripts. Важно: PlayerModule —
+	-- это ModuleScript, у него НЕТ свойства Disabled (попытка его выставить
+	-- падает с ошибкой). Поэтому PlayerModule мы НЕ отключаем: он нужен для
+	-- работы камеры/контроллов, а его "скрытие тела в первом лице" мы
+	-- перебиваем каждый кадр в CharacterTransparency.
 	local playerScripts = player:WaitForChild("PlayerScripts")
-	local names = {
-		"PlayerModule",
-		"ControlModule",
-		"CameraModule",
-	}
 
 	local function disable(instance)
-		if instance:IsA("LuaSourceContainer") then
-			instance.Disabled = true
+		-- Отключаем только то, что реально имеет Disabled (LocalScript/Script).
+		if instance:IsA("LocalScript") or instance:IsA("Script") then
+			pcall(function()
+				instance.Disabled = true
+			end)
 		end
 	end
 
-	for _, name in names do
+	-- ControlModule/CameraModule лежат внутри PlayerModule и обычно тоже
+	-- ModuleScript'ы — их не трогаем (см. комментарий выше).
+	for _, name in { "ControlModule", "CameraModule" } do
 		local existing = playerScripts:FindFirstChild(name)
 		if existing then
 			disable(existing)
 		end
 	end
-
-	playerScripts.ChildAdded:Connect(function(child)
-		if table.find(names, child.Name) then
-			task.defer(disable, child)
-		end
-	end)
 end
 
 local function prepareCharacter(character)
@@ -64,6 +61,37 @@ local function prepareCharacter(character)
 	-- Стандартные "прыжки" от Roblox ControlModule отключены вместе с модулем,
 	-- поэтому прыжок обрабатывается в PlayerController.
 	humanoid.WalkSpeed = 0 -- скоростью управляет PlayerController
+
+	-- Тело должно быть видно: включаем (выключается в Config.ViewModel.ShowBody).
+	local bodyParts = {
+		"Head",
+		"Torso",
+		"UpperTorso",
+		"LowerTorso",
+		"Left Arm",
+		"Right Arm",
+		"Left Leg",
+		"Right Leg",
+		"LeftUpperArm",
+		"RightUpperArm",
+		"LeftUpperLeg",
+		"RightUpperLeg",
+		"LeftLowerArm",
+		"RightLowerArm",
+		"LeftLowerLeg",
+		"RightLowerLeg",
+		"LeftHand",
+		"RightHand",
+		"LeftFoot",
+		"RightFoot",
+	}
+	for _, partName in bodyParts do
+		local part = character:FindFirstChild(partName)
+		if part and part:IsA("BasePart") then
+			-- LocalTransparencyModifier — то, чем движок прячет тело в 1-м лице.
+			part.LocalTransparencyModifier = part.Name == "Head" and 1 or 0
+		end
+	end
 end
 
 function CharacterSetup.start()

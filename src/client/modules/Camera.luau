@@ -118,7 +118,11 @@ function Camera:update(dt)
 	self.leanAngle += (self.leanTarget * Config.Camera.LeanAngle - self.leanAngle) * math.clamp(dt * 10, 0, 1)
 
 	local crouchOffset = self.isCrouching and -0.5 or 0
-	local origin = head.Position + Config.Camera.EyeOffset + Vector3.new(bobX, bobY + crouchOffset, 0)
+	-- Камера чуть впереди головы: иначе она окажется внутри тела, и торс/живот
+	-- не будут видны при взгляде вниз (а near-plane срежет шею).
+	local forward = Config.Camera.EyeForward or 0.6
+	local ahead = Vector3.new(-math.sin(math.rad(self.smoothedAngles.X)), 0, -math.cos(math.rad(self.smoothedAngles.X)))
+	local origin = head.Position + Config.Camera.EyeOffset + ahead * forward + Vector3.new(bobX, bobY + crouchOffset, 0)
 
 	-- Мягкое сглаживание: камера чуть "догоняет" мышь (не резкие рывки).
 	local smooth = Config.Camera.Smoothing or 0.35

@@ -557,6 +557,18 @@ test("Config: режим вида и прятанье курсора задан�
 	assertTrue(Config.Camera.ShakeScale <= 0.5, "тряска от выстрела слишком сильная")
 end)
 
+test("Config: тело видно от первого лица", function()
+	assertTrue(
+		Config.ViewModel.ShowBody == true,
+		"тело спрятано — руки/ноги/живот не будут видны"
+	)
+	assertTrue(
+		Config.ViewModel.HideHead == true,
+		"голова должна быть спрятана, иначе закрывает обзор"
+	)
+	assertTrue(Config.Camera.EyeForward > 0, "камера внутри головы — торс не виден")
+end)
+
 test("Config: у оружия задан хват для кисти", function()
 	assertTrue(Config.Weapons.HandGripCFrame ~= nil, "нет HandGripCFrame — оружие встанет криво")
 	assertTrue(#Config.Weapons.HandNames >= 1, "не заданы имена кистей")
