@@ -1,9 +1,12 @@
 # Запуск за 5 минут
 
+> Первый раз с Rojo? См. `docs/INSTALL_ROJO.md` — там пошагово про `rojo.exe`,
+> PATH и подключение плагина.
+
 ## 1. Rojo
 
 ```bash
-# из корня проекта
+# из корня проекта (там, где лежит default.project.json)
 rojo serve
 ```
 

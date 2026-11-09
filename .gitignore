@@ -2,6 +2,10 @@
 *.rbxlx
 *.rbxl.lock
 *.rbxlx.lock
+*.rbxl
+# сам бинарник rojo.exe в папку проекта не кладём
+rojo.exe
+rojo
 
 # Зависимости и артефакты тестов
 node_modules/

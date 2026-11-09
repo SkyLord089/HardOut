@@ -13,8 +13,9 @@
 
 ### Вариант A — Rojo (рекомендуется, работает и в VS Code)
 
-1. Установи [Rojo](https://rojo.space/) и плагин Rojo для Roblox Studio.
-2. В папке проекта:
+1. Установи [Rojo](https://rojo.space/) (это `rojo.exe` — им запускается сервер)
+   и плагин Rojo для Roblox Studio. Пошагово — `docs/INSTALL_ROJO.md`.
+2. В папке проекта (там, где `default.project.json`):
 
    ```bash
    rojo serve
