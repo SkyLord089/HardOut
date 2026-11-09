@@ -43,6 +43,27 @@ rojo build default.project.json -o HardOut.rbxlx
 
 Подробнее — `docs/HANDS_AND_GUN.md`.
 
+## 3.5. Руки, ноги, курсор и камера
+
+Всё это крутится в `Config` (файл `src/shared/HardOut/Config.luau`):
+
+| Что | Где | По умолчанию |
+|---|---|---|
+| Руки и ноги — настоящий персонаж со штатными анимациями | `ViewModel.Mode = "Character"` | включено |
+| Прятать голову/шляпы, чтобы не мешали обзору | `ViewModel.HideHead` | `true` |
+| Курсор мыши в центре экрана | `Camera.HideCursor` | `false` = спрятан |
+| Свой прицел | `Camera.ShowCrosshair` | `false` = без прицела |
+| Покачивание головы | `Camera.HeadBob.Amplitude` | `0.045` (мягко) |
+| Наклон в стрейфе | `Camera.LeanAngle` | `1.2` |
+| Сглаживание поворота | `Camera.Smoothing` | `0.3` |
+| Тряска от выстрела | `Camera.ShakeScale` | `0.35` |
+
+Хочешь процедурные руки-бруски вместо аватара (нет анимаций Roblox):
+`ViewModel.Mode = "Procedural"`.
+
+Хочешь «мёртвый» кадр без качания: `HeadBob.Amplitude = 0`, `ShakeScale = 0`,
+`Smoothing = 0`.
+
 ## 4. Если что-то не так
 
 | Симптом | Что проверить |

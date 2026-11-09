@@ -20,6 +20,7 @@ local HardOut = ReplicatedStorage:WaitForChild("HardOut")
 local Config = require(HardOut:WaitForChild("Config"))
 
 local CameraModule = require(script.Parent.Camera)
+local CharacterRig = require(script.Parent.CharacterRig)
 local FirstPersonRig = require(script.Parent.FirstPersonRig)
 local Input = require(script.Parent.Input)
 
@@ -74,8 +75,12 @@ function PlayerController:start()
 	end, "Began")
 
 	Input.on("Jump", function()
+		self.jumpRequested = true
 		self:tryJump()
 	end, "Began")
+	Input.on("Jump", function()
+		self.jumpRequested = false
+	end, "Ended")
 
 	self:bindCharacter()
 	player.CharacterAdded:Connect(function(character)
@@ -113,6 +118,9 @@ function PlayerController:tryJump()
 	then
 		self.lastJumpAt = now
 		humanoid.Jump = true
+	else
+		-- Запомнили намерение: прыгнем, как только приземлимся.
+		self.jumpQueuedUntil = now + 0.25
 	end
 end
 
@@ -125,11 +133,17 @@ function PlayerController:bindCharacter(character)
 	self.humanoid = current:WaitForChild("Humanoid")
 	self.speed = 0
 
-	-- Пересоздаём ViewModel под нового персонажа.
+	-- Пересоздаём риг под нового персонажа.
 	if self.rig then
 		self.rig:destroy()
 	end
-	self.rig = FirstPersonRig.new(self.camera)
+	if Config.ViewModel.Mode == "Character" then
+		-- Настоящий персонаж: его руки, ноги и штатные анимации.
+		self.rig = CharacterRig.new(current)
+	else
+		-- Процедурные руки/ноги из кода.
+		self.rig = FirstPersonRig.new(self.camera)
+	end
 	if self.onRigReady then
 		self.onRigReady(self.rig)
 	end
@@ -210,6 +224,11 @@ function PlayerController:updateMovement(dt)
 
 	humanoid.WalkSpeed = self.walkSpeed
 	humanoid:Move(worldMove * (worldMove.Magnitude > 0 and 1 or 0), false)
+
+	-- Зажатый пробел / прыжок в воздухе: дожимаем, когда коснёмся земли.
+	if self.jumpRequested or (self.jumpQueuedUntil and os.clock() < self.jumpQueuedUntil) then
+		self:tryJump()
+	end
 
 	-- Присед: уменьшаем HipHeight, чтобы модель реально опускалась.
 	local targetHip = self.isCrouching and 1.2 or 2

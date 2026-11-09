@@ -70,14 +70,15 @@ local ACTION_BY_KEY = {
 
 function Input.start()
 	UserInputService.InputBegan:Connect(function(input, processed)
+		-- Пробел ловим всегда: прыжком управляем мы, дефолтный ControlModule отключён.
+		if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Space then
+			emit("Jump", "Began")
+			return
+		end
 		if processed then
 			return
 		end
 		local kind = input.UserInputType
-		if kind == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Space then
-			emit("Jump", "Began")
-			return
-		end
 		if kind == Enum.UserInputType.MouseButton1 then
 			emit("Fire", "Began")
 		elseif kind == Enum.UserInputType.MouseButton2 then
@@ -92,6 +93,15 @@ function Input.start()
 			local action = ACTION_BY_KEY[input.KeyCode]
 			if action then
 				emit(action, "Began")
+			end
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		-- Если игра потеряла фокус и вернула его — снова запираем мышь в центре.
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			if UserInputService.MouseBehavior ~= Enum.MouseBehavior.LockCenter then
+				UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
 			end
 		end
 	end)

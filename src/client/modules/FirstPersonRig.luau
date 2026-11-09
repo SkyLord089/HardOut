@@ -146,6 +146,7 @@ function FirstPersonRig:build()
 	self.leftBoot = leftBoot
 	self.handAnchor = handAnchor
 	self.supportAnchor = supportAnchor
+	self.handPart = rightLowerArm
 	return model
 end
 
@@ -330,6 +331,15 @@ function FirstPersonRig:poseLegs(dt)
 
 	placeLeg(hipRight, footRight, self.rightUpperLeg, self.rightLowerLeg, self.rightBoot)
 	placeLeg(hipLeft, footLeft, self.leftUpperLeg, self.leftLowerLeg, self.leftBoot)
+end
+
+--[[ Интерфейс как у CharacterRig: часть-кисть и CFrame хвата. ]]
+function FirstPersonRig:getGripCFrame(): CFrame
+	return self.handAnchor.CFrame
+end
+
+function FirstPersonRig:getHandPart()
+	return self.handAnchor.Parent
 end
 
 --[[ Мировая точка правой кисти. ]]

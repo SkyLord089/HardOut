@@ -541,6 +541,27 @@ end)
 
 local Config = loadModule("Config")
 
+test("Config: режим вида и прятанье курсора заданы", function()
+	assertTrue(
+		Config.ViewModel.Mode == "Character" or Config.ViewModel.Mode == "Procedural",
+		"неизвестный режим вида"
+	)
+	assertTrue(Config.Camera.HideCursor == true, "курсор не спрятан")
+	assertTrue(Config.Camera.Smoothing >= 0, "сглаживание отрицательное")
+	-- Анимации камеры не должны быть "сильными".
+	assertTrue(
+		Config.Camera.HeadBob.Amplitude <= 0.1,
+		"покачивание головы слишком большое"
+	)
+	assertTrue(Config.Camera.LeanAngle <= 2, "наклон в стрейфе слишком сильный")
+	assertTrue(Config.Camera.ShakeScale <= 0.5, "тряска от выстрела слишком сильная")
+end)
+
+test("Config: у оружия задан хват для кисти", function()
+	assertTrue(Config.Weapons.HandGripCFrame ~= nil, "нет HandGripCFrame — оружие встанет криво")
+	assertTrue(#Config.Weapons.HandNames >= 1, "не заданы имена кистей")
+end)
+
 test("Config: скорости и слоты в разумных пределах", function()
 	assertTrue(Config.Movement.WalkSpeed > 0 and Config.Movement.WalkSpeed < 30)
 	assertTrue(Config.Movement.SprintSpeed > Config.Movement.WalkSpeed)

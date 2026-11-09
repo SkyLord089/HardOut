@@ -42,6 +42,8 @@ function Camera.new(player)
 	self.aimFactor = 0
 	self.lastDelta = Vector2.zero
 	self.lastCFrame = CFrame.new(0, 0, 0)
+	self.smoothedAngles = Vector2.new(0, 0)
+	self.shakePhase = 0
 	return self
 end
 
@@ -59,7 +61,8 @@ end
 
 function Camera:addRecoil(yaw, pitch, visualMult)
 	self.recoil:AddShot(yaw, pitch, visualMult)
-	self.shake = math.min(self.shake + 0.35 * (visualMult or 1), 1.6)
+	local strength = Config.Camera.ShakeScale or 0.35
+	self.shake = math.min(self.shake + 0.35 * (visualMult or 1) * strength, 1.6 * strength)
 end
 
 function Camera:setAiming(isAiming, adsFov)
@@ -117,9 +120,19 @@ function Camera:update(dt)
 	local crouchOffset = self.isCrouching and -0.5 or 0
 	local origin = head.Position + Config.Camera.EyeOffset + Vector3.new(bobX, bobY + crouchOffset, 0)
 
+	-- Мягкое сглаживание: камера чуть "догоняет" мышь (не резкие рывки).
+	local smooth = Config.Camera.Smoothing or 0.35
+	local targetAngles = Vector2.new(self.lookAngles.X - recoilYaw, self.lookAngles.Y - recoilPitch)
+	if smooth > 0 then
+		self.smoothedAngles =
+			self.smoothedAngles:Lerp(targetAngles, math.clamp(dt * (1 / math.max(smooth, 0.02)), 0, 1))
+	else
+		self.smoothedAngles = targetAngles
+	end
+
 	local rotation = CFrame.fromOrientation(
-		math.rad(self.lookAngles.Y - recoilPitch + shakePitch),
-		math.rad(self.lookAngles.X - recoilYaw),
+		math.rad(self.smoothedAngles.Y + shakePitch),
+		math.rad(self.smoothedAngles.X),
 		math.rad(self.leanAngle + bobRoll + shakeRoll)
 	)
 

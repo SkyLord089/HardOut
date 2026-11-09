@@ -5,9 +5,22 @@
 ]]
 
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
+
+local Config = require(ReplicatedStorage:WaitForChild("HardOut"):WaitForChild("Config"))
+
+-- Курсор: без системной стрелки в центре экрана и без "свободной" мыши.
+if Config.Camera.HideCursor then
+	UserInputService.MouseIconEnabled = false
+	UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
+end
+
+-- Камера от первого лица (скриптовая, наша).
+player.CameraMode = Enum.CameraMode.LockFirstPerson
 
 -- Папка Modules — рядом с ClientBoot (внутри StarterPlayerScripts).
 local Modules = script.Parent and script.Parent:FindFirstChild("Modules")
@@ -26,6 +39,9 @@ local Tracers = require(Modules:WaitForChild("Tracers"))
 CharacterSetup.start()
 
 local hud = Hud.new()
+if Config.Camera.ShowCrosshair == false then
+	hud:setCrosshairVisible(false)
+end
 
 local controller = PlayerController.new()
 controller.hud = hud

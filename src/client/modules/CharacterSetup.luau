@@ -6,8 +6,8 @@
 	  * отключает дефолтные контроллы Roblox (они перехватывают мышь,
 	    зумят камеру и двигают персонажа так, как нам не надо);
 	  * гасит авто-поворот персонажа (у нас своя камера);
-	  * выключает анимации персонажа: в кадре всё равно только ViewModel,
-	    но чужие анимации дёргают Humanoid и «пружинят» позицию головы;
+	  * НЕ выключает анимации персонажа: они нужны, чтобы руки/ноги в кадре
+	    двигались как у живого персонажа;
 	  * убирает прыжок по умолчанию с пробела и ставит свой (с задержкой).
 
 	Здесь же — заготовка под будущий сетевой вид рук других игроков.
@@ -55,19 +55,11 @@ local function prepareCharacter(character)
 
 	humanoid.AutoRotate = false
 	humanoid.UseJumpPower = true
+	-- Камера смотрит из головы: не даём роблоксу крутить персонажа за камерой.
+	humanoid.CameraOffset = Vector3.new(0, 0, 0)
 
-	-- Отключаем анимации персонажа (R6/R15). ViewModel свой, они не нужны.
-	local animate = character:FindFirstChild("Animate")
-	if animate then
-		animate.Disabled = true
-	end
-
-	local animator = humanoid:FindFirstChildOfClass("Animator")
-	if animator then
-		for _, track in animator:GetPlayingAnimationTracks() do
-			track:Stop(0)
-		end
-	end
+	-- Анимации НЕ отключаем: именно они двигают руки и ноги в кадре.
+	-- (Если когда-нибудь понадобится "мёртвая" поза — Config.ViewModel.Mode = "Procedural".)
 
 	-- Стандартные "прыжки" от Roblox ControlModule отключены вместе с модулем,
 	-- поэтому прыжок обрабатывается в PlayerController.
@@ -77,11 +69,20 @@ end
 function CharacterSetup.start()
 	disableDefaultControls()
 
+	local function ensureAnimations(character)
+		local animate = character:WaitForChild("Animate", 5)
+		if animate and animate:IsA("LocalScript") then
+			animate.Disabled = false
+		end
+	end
+
 	if player.Character then
 		task.spawn(prepareCharacter, player.Character)
+		task.spawn(ensureAnimations, player.Character)
 	end
 	player.CharacterAdded:Connect(function(character)
 		task.spawn(prepareCharacter, character)
+		task.spawn(ensureAnimations, character)
 	end)
 end
 

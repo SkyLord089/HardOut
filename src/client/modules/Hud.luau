@@ -247,6 +247,16 @@ function Hud:setReload(reloading, progress)
 	self.reloadFill.Size = UDim2.fromScale(math.clamp(progress or 0, 0, 1), 1)
 end
 
+--[[ Показать/скрыть свой прицел целиком. ]]
+function Hud:setCrosshairVisible(isVisible)
+	if self.crossContainer then
+		self.crossContainer.Visible = isVisible
+	end
+	if self.dot then
+		self.dot.Visible = isVisible
+	end
+end
+
 --[[ Прицел: в ADS крестик сходится и гаснет, остаётся точка. ]]
 function Hud:setAim(aimFactor)
 	self.aimFactor = aimFactor or 0

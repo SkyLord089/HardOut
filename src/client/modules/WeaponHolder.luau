@@ -162,21 +162,52 @@ function WeaponHolder:attach()
 		self.sockets.Grip = fallback
 	end
 
-	-- C1 — CFrame.Grip в системе координат корневой части.
+	-- C1 — CFrame.Grip в системе координат корневой части оружия.
 	local gripWorld = (grip.Parent :: BasePart).CFrame * grip.CFrame
 	local gripRelative = root.CFrame:ToObjectSpace(gripWorld)
 
-	-- Правая кисть — конец нижнего сегмента руки, там висит HandAnchor.
-	local handPart = self.rig.handAnchor.Parent :: BasePart
+	-- Кисть берём у рига: у настоящего персонажа это RightHand/Right Arm,
+	-- у процедурного — конец правой руки. Так оружие работает в обоих режимах.
+	local handPart = self.rig.handPart or (self.rig.handAnchor and self.rig.handAnchor.Parent)
+	if not handPart or not handPart:IsA("BasePart") then
+		warn("[HardOut] Не найдена кисть для крепления оружия.")
+		return
+	end
+	self.handPart = handPart
+
+	local gripCFrame = Config.Weapons.HandGripCFrame
+	if self.rig.getGripCFrame then
+		gripCFrame = self.rig:getGripCFrame()
+	elseif self.rig.handAnchor then
+		gripCFrame = self.rig.handAnchor.CFrame
+	end
 
 	local weld = Instance.new("Weld")
 	weld.Name = "WeaponWeld"
 	weld.Part0 = handPart
 	weld.Part1 = root
-	weld.C0 = self.rig.handAnchor.CFrame
+	weld.C0 = gripCFrame
 	weld.C1 = gripRelative
 	weld.Parent = handPart
 	self.weld = weld
+	self.baseGrip = gripCFrame
+	self.aimAlpha = 0
+end
+
+--[[
+	Прицеливание (ADS) для настоящей руки: позу руки мы не трогаем (её ведёт
+	аниматор персонажа), поэтому оружие само плавно подъезжает к центру кадра.
+	Для процедурного рига рука и так поднимается — там сдвиг меньше.
+]]
+function WeaponHolder:setAim(alpha: number, dt: number)
+	if not self.weld or not self.baseGrip then
+		return
+	end
+	local target = math.clamp(alpha or 0, 0, 1)
+	self.aimAlpha += (target - self.aimAlpha) * math.clamp(dt * 12, 0, 1)
+
+	local offset = Config.Weapons.AimOffset or CFrame.new()
+	self.weld.C0 = self.baseGrip * CFrame.new(offset.Position * self.aimAlpha)
 end
 
 function WeaponHolder:getMuzzleCFrame(): CFrame

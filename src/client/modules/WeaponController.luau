@@ -291,6 +291,11 @@ function WeaponController:update(dt)
 		return
 	end
 
+	-- Оружие плавно подъезжает к центру в прицеле.
+	if self.holder and self.holder.setAim then
+		self.holder:setAim(self.controller.camera:getAimFactor(), dt)
+	end
+
 	if self.triggerHeld then
 		self:tryFire()
 	end

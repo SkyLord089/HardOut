@@ -201,21 +201,6 @@ return ArmSolver
 
 local Config = {}
 
---[[ Оружие ]]
-Config.Weapons = {
-	-- Папка в ReplicatedStorage, куда кладутся модели оружия (Model или Tool).
-	-- Положил модель -> стенд сам выдаст её в руки (слот 1, дальше по алфавиту).
-	FolderPath = "ReplicatedStorage.WeaponModels",
-
-	-- Подгонять размер модели под эталон (GunPreset.ReferenceSize).
-	-- Полезно, если модель сделана "не в масштабе" персонажа.
-	AutoScale = false,
-
-	-- Звук выстрела: вставь свой rbxassetid, например "rbxassetid://123456789".
-	-- Пусто -> без звука (стенд не тянет сторонние ассеты).
-	ShotSoundId = "",
-}
-
 --[[ Инвентарь ]]
 Config.Inventory = {
 	-- Сколько слотов рисуется в хотбаре (максимум 9 — по числу клавиш).
@@ -228,33 +213,71 @@ Config.Camera = {
 	BaseFov = 75,
 	FovLerpSpeed = 10,
 
-	-- Наклон камеры при стрейфе (градусы) — тарковская "масса" при движении.
-	LeanAngle = 2.5,
+	-- Наклон камеры при стрейфе (градусы). Мягко: 1.0-1.5, "тарковее": 2.5+.
+	LeanAngle = 1.2,
 
-	-- Покачивание головы при ходьбе.
+	-- Покачивание головы при ходьбе (мягкое, чтобы не укачивало).
 	HeadBob = {
 		Enabled = true,
-		Amplitude = 0.1, -- studs
-		Frequency = 2.0, -- множитель к частоте шага
+		Amplitude = 0.045, -- studs
+		Frequency = 1.5, -- множитель к частоте шага
 	},
+
+	-- Сила "тряски" от выстрела. 0 = совсем без тряски.
+	ShakeScale = 0.35,
+
+	-- Сглаживание поворота: 0 = 1:1 с мышью, 0.3-0.4 = мягко (не "дёргает").
+	Smoothing = 0.3,
+
+	-- Прятать системный курсор и запирать его в центре экрана.
+	HideCursor = true,
+
+	-- Рисовать свой прицел в центре. false = чистая картинка без точки.
+	ShowCrosshair = false,
 
 	-- Смещение глаз относительно головы персонажа.
 	EyeOffset = Vector3.new(0, 0.35, 0),
 }
 
---[[ Модель от первого лица (руки/ноги) ]]
+--[[ Руки и ноги от первого лица ]]
 Config.ViewModel = {
-	-- Включить процедурные руки/ноги.
+	-- Как показывать тело:
+	--   "Character"   — НАСТОЯЩИЙ персонаж: его руки, ноги и штатные анимации
+	--                   (рекомендуется: живые анимации Roblox, видны руки и ноги).
+	--   "Procedural"  — процедурные руки/ноги из кода (без ассетов, свои позы).
+	Mode = "Character",
+
+	-- Для Mode = "Procedural".
 	Enabled = true,
-
-	-- Показывать ноги (видны при взгляде вниз).
 	ShowLegs = true,
-
-	-- Скрывать настоящие руки/ноги персонажа, чтобы не торчали в кадре.
 	HideCharacterLimbs = true,
-
-	-- Общий сдвиг ViewModel относительно камеры (если нужно "посадить" руки ниже).
 	Offset = CFrame.new(0, 0, 0),
+
+	-- Прятать голову и головные аксессуары (шляпы/маски), чтобы не закрывали обзор.
+	HideHead = true,
+}
+
+--[[ Оружие в руках ]]
+Config.Weapons = {
+	-- Папка в ReplicatedStorage с моделями оружия (Model).
+	FolderPath = "ReplicatedStorage.WeaponModels",
+
+	-- Подгонять размер модели под эталон.
+	AutoScale = false,
+
+	-- Звук выстрела: свой rbxassetid, пусто = без звука.
+	ShotSoundId = "",
+
+	-- Куда крепится оружие ОТНОСИТЕЛЬНО кисти (RightHand / Right Arm).
+	-- Если пушка смотрит вверх/вбок — крути именно это, а не модель:
+	--   CFrame.Angles(math.rad(-90), 0, 0) разворачивает ствол вдоль руки.
+	HandGripCFrame = CFrame.new(0, -0.35, 0) * CFrame.Angles(math.rad(-90), 0, 0),
+
+	-- Имя части-кисти для разных ригов (R15 / R6).
+	HandNames = { "RightHand", "Right Arm" },
+
+	-- Сдвиг модели оружия в прицеле (ADS): придвигаем к центру экрана.
+	AimOffset = CFrame.new(0, 0.12, -0.15),
 }
 
 --[[ Движение — намеренно медленнее роблоксового, в духе Таркова ]]
@@ -2053,16 +2076,29 @@ function TestRange.build()
 end
 
 return TestRange
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="StarterPlayer" referent="RBX00000000000000000000000000000029"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayer</string><float name="CameraMaxZoomDistance">0.5</float><float name="CameraMinZoomDistance">0.5</float><float name="CharacterWalkSpeed">8</float><float name="CharacterJumpPower">42</float><bool name="CharacterUseJumpPower">true</bool><bool name="EnableMouseLockOption">false</bool></Properties><Item class="StarterPlayerScripts" referent="RBX00000000000000000000000000000028"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayerScripts</string></Properties><Item class="LocalScript" referent="RBX0000000000000000000000000000001D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ClientBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="StarterPlayer" referent="RBX0000000000000000000000000000002A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayer</string><float name="CameraMaxZoomDistance">0.5</float><float name="CameraMinZoomDistance">0.5</float><float name="CharacterWalkSpeed">8</float><float name="CharacterJumpPower">42</float><bool name="CharacterUseJumpPower">true</bool><bool name="EnableMouseLockOption">false</bool></Properties><Item class="StarterPlayerScripts" referent="RBX00000000000000000000000000000029"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayerScripts</string></Properties><Item class="LocalScript" referent="RBX0000000000000000000000000000001D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ClientBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	HardOut — клиентская точка входа.
 	Запускает HUD, контроллер игрока (камера + руки/ноги) и оружие.
 ]]
 
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
+
+local Config = require(ReplicatedStorage:WaitForChild("HardOut"):WaitForChild("Config"))
+
+-- Курсор: без системной стрелки в центре экрана и без "свободной" мыши.
+if Config.Camera.HideCursor then
+	UserInputService.MouseIconEnabled = false
+	UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
+end
+
+-- Камера от первого лица (скриптовая, наша).
+player.CameraMode = Enum.CameraMode.LockFirstPerson
 
 -- Папка Modules — рядом с ClientBoot (внутри StarterPlayerScripts).
 local Modules = script.Parent and script.Parent:FindFirstChild("Modules")
@@ -2081,6 +2117,9 @@ local Tracers = require(Modules:WaitForChild("Tracers"))
 CharacterSetup.start()
 
 local hud = Hud.new()
+if Config.Camera.ShowCrosshair == false then
+	hud:setCrosshairVisible(false)
+end
 
 local controller = PlayerController.new()
 controller.hud = hud
@@ -2091,7 +2130,7 @@ local weaponController = WeaponController.new(controller)
 Tracers.initialize()
 
 print("[HardOut] Клиент готов: вид от первого лица, руки/ноги, HUD.")
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX00000000000000000000000000000027"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX0000000000000000000000000000001E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Camera</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX00000000000000000000000000000028"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX0000000000000000000000000000001E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Camera</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Camera.luau
 	Камера от первого лица, полностью управляемая скриптом.
@@ -2135,6 +2174,8 @@ function Camera.new(player)
 	self.aimFactor = 0
 	self.lastDelta = Vector2.zero
 	self.lastCFrame = CFrame.new(0, 0, 0)
+	self.smoothedAngles = Vector2.new(0, 0)
+	self.shakePhase = 0
 	return self
 end
 
@@ -2152,7 +2193,8 @@ end
 
 function Camera:addRecoil(yaw, pitch, visualMult)
 	self.recoil:AddShot(yaw, pitch, visualMult)
-	self.shake = math.min(self.shake + 0.35 * (visualMult or 1), 1.6)
+	local strength = Config.Camera.ShakeScale or 0.35
+	self.shake = math.min(self.shake + 0.35 * (visualMult or 1) * strength, 1.6 * strength)
 end
 
 function Camera:setAiming(isAiming, adsFov)
@@ -2210,9 +2252,19 @@ function Camera:update(dt)
 	local crouchOffset = self.isCrouching and -0.5 or 0
 	local origin = head.Position + Config.Camera.EyeOffset + Vector3.new(bobX, bobY + crouchOffset, 0)
 
+	-- Мягкое сглаживание: камера чуть "догоняет" мышь (не резкие рывки).
+	local smooth = Config.Camera.Smoothing or 0.35
+	local targetAngles = Vector2.new(self.lookAngles.X - recoilYaw, self.lookAngles.Y - recoilPitch)
+	if smooth > 0 then
+		self.smoothedAngles =
+			self.smoothedAngles:Lerp(targetAngles, math.clamp(dt * (1 / math.max(smooth, 0.02)), 0, 1))
+	else
+		self.smoothedAngles = targetAngles
+	end
+
 	local rotation = CFrame.fromOrientation(
-		math.rad(self.lookAngles.Y - recoilPitch + shakePitch),
-		math.rad(self.lookAngles.X - recoilYaw),
+		math.rad(self.smoothedAngles.Y + shakePitch),
+		math.rad(self.smoothedAngles.X),
 		math.rad(self.leanAngle + bobRoll + shakeRoll)
 	)
 
@@ -2234,7 +2286,172 @@ function Camera:getAimFactor()
 end
 
 return Camera
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000001F"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterSetup</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000001F"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterRig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+--[[
+	CharacterRig.luau
+	"Руки и ноги от первого лица" через НАСТОЯЩЕГО персонажа.
+
+	Почему так лучше процедурных частей:
+	  * руки и ноги — это твои аватары/скины, а не серые бруски;
+	  * работают штатные анимации Roblox (idle / walk / run / jump) — «анимации
+	    персонажа», как ты и просил;
+	  * оружие цепляется к настоящей кисти (RightHand в R15, Right Arm в R6),
+	    поэтому оно честно ездит вместе с анимацией рук.
+
+	Что делает модуль:
+	  1. Прячет голову и головные аксессуары (иначе они закрывают обзор изнутри).
+	  2. Включает штатные анимации (в CharacterSetup они больше не отключаются).
+	  3. Даёт стабильный интерфейс для WeaponHolder/WeaponController:
+	         rig.handPart   — часть-кисть (BasePart)
+	         rig:getGripCFrame() — CFrame хвата оружия в системе кисти
+	         rig:setState / update / destroy
+	4. Подстраховывает "провал камеры в голову": голова невидима локально,
+	     поэтому near-plane не режет кадр.
+
+	Переключить на процедурные руки: Config.ViewModel.Mode = "Procedural".
+]]
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local HardOut = ReplicatedStorage:WaitForChild("HardOut")
+local Config = require(HardOut:WaitForChild("Config"))
+
+local CharacterRig = {}
+CharacterRig.__index = CharacterRig
+
+local HEAD_NAMES = {
+	Head = true,
+	["head"] = true,
+}
+
+local function isAccessory(instance: Instance): boolean
+	-- Шляпы/маски/очки — это Accessory с рукой-обёрткой; прячем целиком.
+	return instance:IsA("Accessory") or instance:IsA("Hat")
+end
+
+local function findHand(character: Instance): BasePart?
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	for _, handName in Config.Weapons.HandNames do
+		local part = character:FindFirstChild(handName)
+		if part and part:IsA("BasePart") then
+			return part
+		end
+	end
+	-- На всякий случай: первая рука, которую найдём.
+	for _, part in character:GetChildren() do
+		if part:IsA("BasePart") and string.find(part.Name, "Arm") then
+			return part
+		end
+	end
+	return nil
+end
+
+function CharacterRig.new(character: Instance)
+	local self = setmetatable({}, CharacterRig)
+	self.character = character
+	self.humanoid = character:FindFirstChildOfClass("Humanoid")
+	self.enabled = Config.ViewModel.Mode == "Character"
+
+	self.hidden = {}
+	self:prepare()
+	return self
+end
+
+--[[ Прячем голову/аксессуары локально: LocalTransparencyModifier не реплицируется. ]]
+function CharacterRig:hideHead()
+	if not Config.ViewModel.HideHead then
+		return
+	end
+
+	local function hide(instance: Instance)
+		if not instance:IsA("BasePart") then
+			return
+		end
+		local shouldHide = HEAD_NAMES[instance.Name] == true
+		-- Аксессуары: их части лежат внутри Accessory; прячем по предку.
+		if not shouldHide and instance:FindFirstAncestorOfClass("Accessory") then
+			shouldHide = true
+		end
+		if shouldHide then
+			instance.LocalTransparencyModifier = 1
+			self.hidden[instance] = true
+		end
+	end
+
+	for _, descendant in self.character:GetDescendants() do
+		hide(descendant)
+	end
+
+	-- Аксессуары могут добавиться позже (загрузка аватара).
+	self.connection = self.character.DescendantAdded:Connect(function(descendant)
+		task.defer(hide, descendant)
+	end)
+end
+
+--[[ Штатные анимации должны играть: это и есть "анимации персонажа". ]]
+function CharacterRig:prepare()
+	self.handPart = findHand(self.character)
+	self:hideHead()
+
+	local animate = self.character:FindFirstChild("Animate")
+	if animate and animate:IsA("LocalScript") then
+		animate.Disabled = false
+	end
+
+	if self.humanoid then
+		self.humanoid.AutoRotate = false -- поворотом управляет PlayerController
+	end
+
+	if not self.handPart then
+		warn(
+			"[HardOut] Не нашёл кисть персонажа (RightHand / Right Arm) — оружие не надеть."
+		)
+	end
+end
+
+--[[ CFrame, к которому цепляется оружие (в системе координат кисти). ]]
+function CharacterRig:getGripCFrame(): CFrame
+	return Config.Weapons.HandGripCFrame
+end
+
+--[[ Совместимость с PlayerController: состояние движения не нужно, но пусть будет. ]]
+function CharacterRig:setState(_state: any)
+	-- Настоящий персонаж анимируется собственными треками, руками управлять не надо.
+end
+
+function CharacterRig:addLook(_deltaX: number, _deltaY: number)
+	-- Инерция рук от мыши: у штатных анимаций её нет. При желании можно добавить
+	-- сюда лёгкий поворот Motor6D "Right Shoulder", но это ломает R15-анимации.
+end
+
+--[[ Вызывается каждый кадр. Пока делать нечего — позу ведёт Animator персонажа. ]]
+function CharacterRig:update(_dt: number)
+	if not self.enabled then
+		return
+	end
+	-- Кисть могла пересоздаться (например, после смены аватара).
+	if not self.handPart or not self.handPart.Parent then
+		self.handPart = findHand(self.character)
+	end
+end
+
+function CharacterRig:destroy()
+	if self.connection then
+		self.connection:Disconnect()
+		self.connection = nil
+	end
+	-- Возвращаем прозрачность (на случай смены режима на процедурный).
+	for part in pairs(self.hidden) do
+		if part.Parent then
+			part.LocalTransparencyModifier = 0
+		end
+	end
+	table.clear(self.hidden)
+end
+
+return CharacterRig
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000020"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterSetup</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	CharacterSetup.luau
 	Приводит стандартный персонаж в состояние, нужное для FPS-стенда:
@@ -2242,8 +2459,8 @@ return Camera
 	  * отключает дефолтные контроллы Roblox (они перехватывают мышь,
 	    зумят камеру и двигают персонажа так, как нам не надо);
 	  * гасит авто-поворот персонажа (у нас своя камера);
-	  * выключает анимации персонажа: в кадре всё равно только ViewModel,
-	    но чужие анимации дёргают Humanoid и «пружинят» позицию головы;
+	  * НЕ выключает анимации персонажа: они нужны, чтобы руки/ноги в кадре
+	    двигались как у живого персонажа;
 	  * убирает прыжок по умолчанию с пробела и ставит свой (с задержкой).
 
 	Здесь же — заготовка под будущий сетевой вид рук других игроков.
@@ -2291,19 +2508,11 @@ local function prepareCharacter(character)
 
 	humanoid.AutoRotate = false
 	humanoid.UseJumpPower = true
+	-- Камера смотрит из головы: не даём роблоксу крутить персонажа за камерой.
+	humanoid.CameraOffset = Vector3.new(0, 0, 0)
 
-	-- Отключаем анимации персонажа (R6/R15). ViewModel свой, они не нужны.
-	local animate = character:FindFirstChild("Animate")
-	if animate then
-		animate.Disabled = true
-	end
-
-	local animator = humanoid:FindFirstChildOfClass("Animator")
-	if animator then
-		for _, track in animator:GetPlayingAnimationTracks() do
-			track:Stop(0)
-		end
-	end
+	-- Анимации НЕ отключаем: именно они двигают руки и ноги в кадре.
+	-- (Если когда-нибудь понадобится "мёртвая" поза — Config.ViewModel.Mode = "Procedural".)
 
 	-- Стандартные "прыжки" от Roblox ControlModule отключены вместе с модулем,
 	-- поэтому прыжок обрабатывается в PlayerController.
@@ -2313,16 +2522,25 @@ end
 function CharacterSetup.start()
 	disableDefaultControls()
 
+	local function ensureAnimations(character)
+		local animate = character:WaitForChild("Animate", 5)
+		if animate and animate:IsA("LocalScript") then
+			animate.Disabled = false
+		end
+	end
+
 	if player.Character then
 		task.spawn(prepareCharacter, player.Character)
+		task.spawn(ensureAnimations, player.Character)
 	end
 	player.CharacterAdded:Connect(function(character)
 		task.spawn(prepareCharacter, character)
+		task.spawn(ensureAnimations, character)
 	end)
 end
 
 return CharacterSetup
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000020"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">FirstPersonRig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000021"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">FirstPersonRig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	FirstPersonRig.luau
 	Руки и ноги от первого лица.
@@ -2470,6 +2688,7 @@ function FirstPersonRig:build()
 	self.leftBoot = leftBoot
 	self.handAnchor = handAnchor
 	self.supportAnchor = supportAnchor
+	self.handPart = rightLowerArm
 	return model
 end
 
@@ -2656,6 +2875,15 @@ function FirstPersonRig:poseLegs(dt)
 	placeLeg(hipLeft, footLeft, self.leftUpperLeg, self.leftLowerLeg, self.leftBoot)
 end
 
+--[[ Интерфейс как у CharacterRig: часть-кисть и CFrame хвата. ]]
+function FirstPersonRig:getGripCFrame(): CFrame
+	return self.handAnchor.CFrame
+end
+
+function FirstPersonRig:getHandPart()
+	return self.handAnchor.Parent
+end
+
 --[[ Мировая точка правой кисти. ]]
 function FirstPersonRig:getHandCFrame()
 	return self.rightLowerArm.CFrame * self.handAnchor.CFrame
@@ -2675,7 +2903,7 @@ function FirstPersonRig:destroy()
 end
 
 return FirstPersonRig
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000021"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Hud</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000022"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Hud</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Hud.luau
 	Минималистичный HUD в духе Таркова: точка/крестик, патроны, слоты,
@@ -2924,6 +3152,16 @@ function Hud:setReload(reloading, progress)
 	self.reloadFill.Size = UDim2.fromScale(math.clamp(progress or 0, 0, 1), 1)
 end
 
+--[[ Показать/скрыть свой прицел целиком. ]]
+function Hud:setCrosshairVisible(isVisible)
+	if self.crossContainer then
+		self.crossContainer.Visible = isVisible
+	end
+	if self.dot then
+		self.dot.Visible = isVisible
+	end
+end
+
 --[[ Прицел: в ADS крестик сходится и гаснет, остаётся точка. ]]
 function Hud:setAim(aimFactor)
 	self.aimFactor = aimFactor or 0
@@ -2942,7 +3180,7 @@ function Hud:setAim(aimFactor)
 end
 
 return Hud
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000022"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Input</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000023"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Input</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Input.luau
 	Единая точка ввода. Держит состояние кнопок и раздаёт события
@@ -3014,14 +3252,15 @@ local ACTION_BY_KEY = {
 
 function Input.start()
 	UserInputService.InputBegan:Connect(function(input, processed)
+		-- Пробел ловим всегда: прыжком управляем мы, дефолтный ControlModule отключён.
+		if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Space then
+			emit("Jump", "Began")
+			return
+		end
 		if processed then
 			return
 		end
 		local kind = input.UserInputType
-		if kind == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Space then
-			emit("Jump", "Began")
-			return
-		end
 		if kind == Enum.UserInputType.MouseButton1 then
 			emit("Fire", "Began")
 		elseif kind == Enum.UserInputType.MouseButton2 then
@@ -3036,6 +3275,15 @@ function Input.start()
 			local action = ACTION_BY_KEY[input.KeyCode]
 			if action then
 				emit(action, "Began")
+			end
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		-- Если игра потеряла фокус и вернула его — снова запираем мышь в центре.
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			if UserInputService.MouseBehavior ~= Enum.MouseBehavior.LockCenter then
+				UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
 			end
 		end
 	end)
@@ -3062,7 +3310,7 @@ function Input.start()
 end
 
 return Input
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000023"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">PlayerController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000024"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">PlayerController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	PlayerController.luau
 	Связывает всё воедино: камера, ViewModel, ввод, движение, обновления по кадрам.
@@ -3084,6 +3332,7 @@ local HardOut = ReplicatedStorage:WaitForChild("HardOut")
 local Config = require(HardOut:WaitForChild("Config"))
 
 local CameraModule = require(script.Parent.Camera)
+local CharacterRig = require(script.Parent.CharacterRig)
 local FirstPersonRig = require(script.Parent.FirstPersonRig)
 local Input = require(script.Parent.Input)
 
@@ -3138,8 +3387,12 @@ function PlayerController:start()
 	end, "Began")
 
 	Input.on("Jump", function()
+		self.jumpRequested = true
 		self:tryJump()
 	end, "Began")
+	Input.on("Jump", function()
+		self.jumpRequested = false
+	end, "Ended")
 
 	self:bindCharacter()
 	player.CharacterAdded:Connect(function(character)
@@ -3177,6 +3430,9 @@ function PlayerController:tryJump()
 	then
 		self.lastJumpAt = now
 		humanoid.Jump = true
+	else
+		-- Запомнили намерение: прыгнем, как только приземлимся.
+		self.jumpQueuedUntil = now + 0.25
 	end
 end
 
@@ -3189,11 +3445,17 @@ function PlayerController:bindCharacter(character)
 	self.humanoid = current:WaitForChild("Humanoid")
 	self.speed = 0
 
-	-- Пересоздаём ViewModel под нового персонажа.
+	-- Пересоздаём риг под нового персонажа.
 	if self.rig then
 		self.rig:destroy()
 	end
-	self.rig = FirstPersonRig.new(self.camera)
+	if Config.ViewModel.Mode == "Character" then
+		-- Настоящий персонаж: его руки, ноги и штатные анимации.
+		self.rig = CharacterRig.new(current)
+	else
+		-- Процедурные руки/ноги из кода.
+		self.rig = FirstPersonRig.new(self.camera)
+	end
 	if self.onRigReady then
 		self.onRigReady(self.rig)
 	end
@@ -3275,6 +3537,11 @@ function PlayerController:updateMovement(dt)
 	humanoid.WalkSpeed = self.walkSpeed
 	humanoid:Move(worldMove * (worldMove.Magnitude > 0 and 1 or 0), false)
 
+	-- Зажатый пробел / прыжок в воздухе: дожимаем, когда коснёмся земли.
+	if self.jumpRequested or (self.jumpQueuedUntil and os.clock() < self.jumpQueuedUntil) then
+		self:tryJump()
+	end
+
 	-- Присед: уменьшаем HipHeight, чтобы модель реально опускалась.
 	local targetHip = self.isCrouching and 1.2 or 2
 	humanoid.HipHeight += (targetHip - humanoid.HipHeight) * math.clamp(dt * 10, 0, 1)
@@ -3312,7 +3579,7 @@ function PlayerController:setAdsFov(fov)
 end
 
 return PlayerController
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000024"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Tracers</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000025"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Tracers</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Tracers.luau
 	Визуал выстрелов: трассер (линия от ствола до попадания), вспышка в точке удара.
@@ -3429,7 +3696,7 @@ function Tracers.initialize()
 end
 
 return Tracers
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000025"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000026"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	WeaponController.luau
 	Оружие в руках на клиенте: слоты, экипировка, стрельба, перезарядка, эффекты.
@@ -3722,6 +3989,11 @@ function WeaponController:update(dt)
 		return
 	end
 
+	-- Оружие плавно подъезжает к центру в прицеле.
+	if self.holder and self.holder.setAim then
+		self.holder:setAim(self.controller.camera:getAimFactor(), dt)
+	end
+
 	if self.triggerHeld then
 		self:tryFire()
 	end
@@ -3737,7 +4009,7 @@ function WeaponController:update(dt)
 end
 
 return WeaponController
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000026"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponHolder</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000027"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponHolder</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	WeaponHolder.luau
 	ЗАГОТОВКА ПОД ОРУЖИЕ — здесь модель пушки превращается в "оружие в руках".
@@ -3901,21 +4173,52 @@ function WeaponHolder:attach()
 		self.sockets.Grip = fallback
 	end
 
-	-- C1 — CFrame.Grip в системе координат корневой части.
+	-- C1 — CFrame.Grip в системе координат корневой части оружия.
 	local gripWorld = (grip.Parent :: BasePart).CFrame * grip.CFrame
 	local gripRelative = root.CFrame:ToObjectSpace(gripWorld)
 
-	-- Правая кисть — конец нижнего сегмента руки, там висит HandAnchor.
-	local handPart = self.rig.handAnchor.Parent :: BasePart
+	-- Кисть берём у рига: у настоящего персонажа это RightHand/Right Arm,
+	-- у процедурного — конец правой руки. Так оружие работает в обоих режимах.
+	local handPart = self.rig.handPart or (self.rig.handAnchor and self.rig.handAnchor.Parent)
+	if not handPart or not handPart:IsA("BasePart") then
+		warn("[HardOut] Не найдена кисть для крепления оружия.")
+		return
+	end
+	self.handPart = handPart
+
+	local gripCFrame = Config.Weapons.HandGripCFrame
+	if self.rig.getGripCFrame then
+		gripCFrame = self.rig:getGripCFrame()
+	elseif self.rig.handAnchor then
+		gripCFrame = self.rig.handAnchor.CFrame
+	end
 
 	local weld = Instance.new("Weld")
 	weld.Name = "WeaponWeld"
 	weld.Part0 = handPart
 	weld.Part1 = root
-	weld.C0 = self.rig.handAnchor.CFrame
+	weld.C0 = gripCFrame
 	weld.C1 = gripRelative
 	weld.Parent = handPart
 	self.weld = weld
+	self.baseGrip = gripCFrame
+	self.aimAlpha = 0
+end
+
+--[[
+	Прицеливание (ADS) для настоящей руки: позу руки мы не трогаем (её ведёт
+	аниматор персонажа), поэтому оружие само плавно подъезжает к центру кадра.
+	Для процедурного рига рука и так поднимается — там сдвиг меньше.
+]]
+function WeaponHolder:setAim(alpha: number, dt: number)
+	if not self.weld or not self.baseGrip then
+		return
+	end
+	local target = math.clamp(alpha or 0, 0, 1)
+	self.aimAlpha += (target - self.aimAlpha) * math.clamp(dt * 12, 0, 1)
+
+	local offset = Config.Weapons.AimOffset or CFrame.new()
+	self.weld.C0 = self.baseGrip * CFrame.new(offset.Position * self.aimAlpha)
 end
 
 function WeaponHolder:getMuzzleCFrame(): CFrame
@@ -3949,5 +4252,5 @@ function WeaponHolder:destroy()
 end
 
 return WeaponHolder
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item></Item><Item class="Players" referent="RBX0000000000000000000000000000002A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX0000000000000000000000000000002B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item></Item><Item class="Players" referent="RBX0000000000000000000000000000002B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX0000000000000000000000000000002C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
 </roblox>
