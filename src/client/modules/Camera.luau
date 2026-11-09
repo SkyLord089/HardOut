@@ -117,6 +117,12 @@ function Camera:update(dt)
 
 	self.leanAngle += (self.leanTarget * Config.Camera.LeanAngle - self.leanAngle) * math.clamp(dt * 10, 0, 1)
 
+	-- FOV: целимся — цель от оружия, иначе берём BaseFov из Config каждый кадр.
+	-- Так изменения Config (и команды /fov) видны сразу, без перезапуска.
+	if not self.aimed then
+		self.fovSpring:SetTarget(Config.Camera.BaseFov)
+	end
+
 	local crouchOffset = self.isCrouching and -0.5 or 0
 	-- Камера чуть впереди головы: иначе она окажется внутри тела, и торс/живот
 	-- не будут видны при взгляде вниз (а near-plane срежет шею).

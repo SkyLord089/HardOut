@@ -32,6 +32,7 @@ if not Modules then
 end
 local CharacterSetup = require(Modules:WaitForChild("CharacterSetup"))
 local CharacterTransparency = require(Modules:WaitForChild("CharacterTransparency"))
+local DebugPanel = require(Modules:WaitForChild("DebugPanel"))
 local Hud = require(Modules:WaitForChild("Hud"))
 local PlayerController = require(Modules:WaitForChild("PlayerController"))
 local WeaponController = require(Modules:WaitForChild("WeaponController"))
@@ -54,5 +55,8 @@ controller:start()
 local weaponController = WeaponController.new(controller)
 
 Tracers.initialize()
+
+-- Диагностика: F2 — панель, /ho — статус в чат. Помогает понять, работает ли скрипт.
+DebugPanel.initialize()
 
 print("[HardOut] Клиент готов: вид от первого лица, руки/ноги, HUD.")
