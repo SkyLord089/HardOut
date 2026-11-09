@@ -1,5 +1,13 @@
 // Проверка .rbxlx настоящим парсером rbx-dom (тот же, что в Rojo).
-const { readXml } = require('rbx-dom') // npm i --no-save rbx-dom;
+// Требуется: npm i --no-save rbx-dom
+// (тот же парсер, что использует Rojo: если он читает файл — файл валиден)
+let readXml;
+try {
+  ({ readXml } = require('rbx-dom'));
+} catch {
+  console.log('Пропущено: не установлен rbx-dom (npm i --no-save rbx-dom)');
+  process.exit(0);
+};
 const fs = require('fs');
 const path = process.argv[2] || '/home/user/HardOut/HardOut.rbxlx';
 
