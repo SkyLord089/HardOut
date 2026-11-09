@@ -1,0 +1,14 @@
+# Rojo
+*.rbxlx
+*.rbxl.lock
+*.rbxlx.lock
+
+# Зависимости и артефакты тестов
+node_modules/
+.rokit/
+sourcemap.json
+
+# Редакторы / ОС
+.DS_Store
+.vscode/settings.json
+.idea/

@@ -1,0 +1,16 @@
+{
+  "name": "hardout",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Тестовый стенд FPS-режима для Roblox (вид от первого лица, руки/ноги, заготовка под оружие)",
+  "scripts": {
+    "check": "node tools/luau-check.mjs",
+    "test": "node tools/run-tests.mjs",
+    "verify": "npm run check && npm test",
+    "build": "rojo build default.project.json -o HardOut.rbxlx",
+    "serve": "rojo serve"
+  },
+  "devDependencies": {
+    "@luau-rs/luau": "^0.739.0"
+  }
+}

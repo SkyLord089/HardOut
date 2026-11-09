@@ -1,0 +1,81 @@
+{
+  "name": "HardOut",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "HardOut": {
+        "$path": "src/shared/HardOut"
+      },
+      "WeaponModels": {
+        "$className": "Folder"
+      }
+    },
+    "ServerScriptService": {
+      "ServerBoot": {
+        "$path": "src/server/init.server.luau"
+      },
+      "Modules": {
+        "$path": "src/server/modules"
+      }
+    },
+    "StarterPlayer": {
+      "$properties": {
+        "CameraMaxZoomDistance": 0.5,
+        "CameraMinZoomDistance": 0.5,
+        "CameraMode": "Custom",
+        "CharacterWalkSpeed": 8,
+        "CharacterJumpPower": 42,
+        "EnableMouseLockOption": false,
+        "CharacterUseJumpPower": true
+      },
+      "StarterPlayerScripts": {
+        "ClientBoot": {
+          "$path": "src/client/init.client.luau"
+        },
+        "Modules": {
+          "$path": "src/client/modules"
+        }
+      }
+    },
+    "Workspace": {
+      "$properties": {
+        "StreamingEnabled": false,
+        "Gravity": 196.2
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "Technology": "Future",
+        "Ambient": [
+          0.156863,
+          0.156863,
+          0.156863
+        ],
+        "OutdoorAmbient": [
+          0.392157,
+          0.392157,
+          0.392157
+        ],
+        "Brightness": 2,
+        "ClockTime": 13,
+        "EnvironmentDiffuseScale": 0.4,
+        "EnvironmentSpecularScale": 0.6,
+        "GlobalShadows": true,
+        "ShadowSoftness": 0.25,
+        "ExposureCompensation": 0.15
+      }
+    },
+    "Players": {
+      "$properties": {
+        "RespawnTime": 1,
+        "CharacterAutoLoads": true
+      }
+    },
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true,
+        "DistanceFactor": 3.33
+      }
+    }
+  }
+}
