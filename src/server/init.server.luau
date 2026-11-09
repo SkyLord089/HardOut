@@ -17,12 +17,19 @@ local Net = require(HardOut:WaitForChild("Net"):WaitForChild("Remotes"))
 
 -- Папка Modules лежит РЯДОМ со скриптом (сиблинг), а не внутри него.
 -- Важно: не block-им поток навсегда — иначе полигон не построится и будет "пусто".
-local Modules = script.Parent and script.Parent:FindFirstChild("Modules")
+local Modules = script.Parent and script.Parent:WaitForChild("Modules", 10)
 if not Modules then
 	warn(
 		"[HardOut] НЕ НАЙДЕНА папка Modules рядом с ServerBoot. "
 			.. "Скрипт должен лежать в ServerScriptService вместе с папкой Modules."
 	)
+	if script.Parent then
+		local found = {}
+		for _, child in script.Parent:GetChildren() do
+			table.insert(found, child.Name .. " (" .. child.ClassName .. ")")
+		end
+		warn("[HardOut] Рядом с ServerBoot: " .. (#found > 0 and table.concat(found, ", ") or "ничего"))
+	end
 	return
 end
 
@@ -37,6 +44,8 @@ for _, name in Net.Names do
 end
 
 -- Папка под модели оружия: создаём, чтобы было куда класть.
+-- Здесь FindFirstChild уместен: папки может не быть в файле по замыслу,
+-- и мы её создаём (в отличие от папок проекта, которые обязаны быть).
 local weaponFolder = ReplicatedStorage:FindFirstChild("WeaponModels")
 if not weaponFolder then
 	weaponFolder = Instance.new("Folder")

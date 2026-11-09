@@ -400,8 +400,9 @@ Remotes.Names = {
 }
 
 function Remotes.getFolder(): Instance
-	local hardOut = ReplicatedStorage:FindFirstChild("HardOut")
-	local folder = hardOut and hardOut:FindFirstChild("Net")
+	-- WaitForChild, а не FindFirstChild: Studio может создать папку позже.
+	local hardOut = ReplicatedStorage:WaitForChild("HardOut", 10)
+	local folder = hardOut and hardOut:WaitForChild("Net", 5)
 	if not folder then
 		local created = Instance.new("Folder")
 		created.Name = "Net"
@@ -1223,78 +1224,7 @@ function WeaponState:reloadProgress(now: number): number
 end
 
 return WeaponState
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="Folder" referent="RBX00000000000000000000000000000014"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">WeaponModels</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties></Item></Item><Item class="ServerScriptService" referent="RBX0000000000000000000000000000001C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">ServerScriptService</string></Properties><Item class="Script" referent="RBX00000000000000000000000000000016"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ServerBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
---[[
-	HardOut — серверная точка входа.
-	Поднимает сеть, полигон и (опционально) модели оружия для теста.
-]]
-
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-
-local HardOut = ReplicatedStorage:WaitForChild("HardOut", 10)
-if not HardOut then
-	warn("[HardOut] Не найдена ReplicatedStorage.HardOut — проверь Rojo-синк.")
-	return
-end
-local Config = require(HardOut:WaitForChild("Config"))
-local Net = require(HardOut:WaitForChild("Net"):WaitForChild("Remotes"))
-
--- Папка Modules лежит РЯДОМ со скриптом (сиблинг), а не внутри него.
--- Важно: не block-им поток навсегда — иначе полигон не построится и будет "пусто".
-local Modules = script.Parent and script.Parent:FindFirstChild("Modules")
-if not Modules then
-	warn(
-		"[HardOut] НЕ НАЙДЕНА папка Modules рядом с ServerBoot. "
-			.. "Скрипт должен лежать в ServerScriptService вместе с папкой Modules."
-	)
-	return
-end
-
-local CombatService = require(Modules:WaitForChild("CombatService"))
-local TestRange = require(Modules:WaitForChild("TestRange"))
-local RaidSandbox = require(Modules:WaitForChild("RaidSandbox"))
-local SampleWeapon = require(Modules:WaitForChild("SampleWeapon"))
-
--- Все RemoteEvent'ы должны существовать до первого выстрела клиента.
-for _, name in Net.Names do
-	Net.get(name)
-end
-
--- Папка под модели оружия: создаём, чтобы было куда класть.
-local weaponFolder = ReplicatedStorage:FindFirstChild("WeaponModels")
-if not weaponFolder then
-	weaponFolder = Instance.new("Folder")
-	weaponFolder.Name = "WeaponModels"
-	weaponFolder.Parent = ReplicatedStorage
-end
-
--- Демо-оружие, чтобы стенд можно было пощупать до появления своей модели.
-local sample = SampleWeapon.install(weaponFolder)
-if sample and Config.Debug.Verbose then
-	print(
-		"[HardOut] Папка WeaponModels была пуста — подложил демо-оружие '"
-			.. sample.Name
-			.. "'."
-	)
-	print(
-		"[HardOut] Когда положишь свою модель, демо можно удалить из папки."
-	)
-end
-
--- Полигон.
-if Config.Debug.Verbose then
-	print("[HardOut] Строю тестовый полигон...")
-end
-TestRange.build()
-
-CombatService.initialize()
-RaidSandbox.initialize()
-
-if Config.Debug.Verbose then
-	print("[HardOut] Сервер готов. Оружие кладётся в ReplicatedStorage.WeaponModels.")
-end
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX0000000000000000000000000000001B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX00000000000000000000000000000017"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CombatService</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="Folder" referent="RBX00000000000000000000000000000014"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">WeaponModels</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties></Item></Item><Item class="ServerScriptService" referent="RBX0000000000000000000000000000001C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">ServerScriptService</string></Properties><Item class="Folder" referent="RBX0000000000000000000000000000001A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX00000000000000000000000000000016"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CombatService</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	CombatService.luau
 	Серверная сторона стрельбы: единственное место, где считается урон.
@@ -1345,7 +1275,7 @@ local function findWeaponModel(name)
 	if type(name) ~= "string" then
 		return nil
 	end
-	local folder = ReplicatedStorage:FindFirstChild("WeaponModels")
+	local folder = ReplicatedStorage:WaitForChild("WeaponModels", 5)
 	if not folder then
 		return nil
 	end
@@ -1475,7 +1405,7 @@ function CombatService.initialize()
 end
 
 return CombatService
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000018"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">RaidSandbox</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000017"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">RaidSandbox</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	RaidSandbox.luau
 	Заготовка "рейдового" слоя в духе Таркова — пока без бэкенда, но с реальными
@@ -1628,7 +1558,7 @@ function RaidSandbox.initialize()
 end
 
 return RaidSandbox
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000019"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">SampleWeapon</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000018"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">SampleWeapon</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	SampleWeapon.luau
 	Демо-оружие "HYBRID-9": процедурная заготовка из Parts, повторяющая ровно тот
@@ -1783,7 +1713,7 @@ function SampleWeapon.install(folder)
 end
 
 return SampleWeapon
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000001A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">TestRange</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000019"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">TestRange</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	TestRange.luau
 	Тестовый полигон, который строится кодом при старте сервера.
@@ -2086,73 +2016,87 @@ function TestRange.build()
 end
 
 return TestRange
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="StarterPlayer" referent="RBX0000000000000000000000000000002D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayer</string><float name="CameraMaxZoomDistance">0.5</float><float name="CameraMinZoomDistance">0.5</float><float name="CharacterWalkSpeed">8</float><float name="CharacterJumpPower">42</float><bool name="CharacterUseJumpPower">true</bool><bool name="EnableMouseLockOption">false</bool></Properties><Item class="StarterPlayerScripts" referent="RBX0000000000000000000000000000002C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayerScripts</string></Properties><Item class="LocalScript" referent="RBX0000000000000000000000000000001D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ClientBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item><Item class="Script" referent="RBX0000000000000000000000000000001B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ServerBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
-	HardOut — клиентская точка входа.
-	Запускает HUD, контроллер игрока (камера + руки/ноги) и оружие.
+	HardOut — серверная точка входа.
+	Поднимает сеть, полигон и (опционально) модели оружия для теста.
 ]]
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
 
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
-local Config = require(ReplicatedStorage:WaitForChild("HardOut"):WaitForChild("Config"))
-
--- Курсор: без системной стрелки в центре экрана и без "свободной" мыши.
-if Config.Camera.HideCursor then
-	UserInputService.MouseIconEnabled = false
-	UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
-end
-
--- Камера от первого лица (скриптовая, наша).
-player.CameraMode = Enum.CameraMode.LockFirstPerson
-
--- Папка Modules — рядом с ClientBoot (внутри StarterPlayerScripts).
-local Modules = script.Parent and script.Parent:FindFirstChild("Modules")
-if not Modules then
-	warn(
-		"[HardOut] НЕ НАЙДЕНА папка Modules рядом с ClientBoot (ожидается внутри StarterPlayerScripts)."
-	)
+local HardOut = ReplicatedStorage:WaitForChild("HardOut", 10)
+if not HardOut then
+	warn("[HardOut] Не найдена ReplicatedStorage.HardOut — проверь Rojo-синк.")
 	return
 end
-local CharacterSetup = require(Modules:WaitForChild("CharacterSetup"))
-local CharacterTransparency = require(Modules:WaitForChild("CharacterTransparency"))
-local DebugPanel = require(Modules:WaitForChild("DebugPanel"))
-local SmokeTest = require(Modules:WaitForChild("SmokeTest"))
-local Hud = require(Modules:WaitForChild("Hud"))
-local PlayerController = require(Modules:WaitForChild("PlayerController"))
-local WeaponController = require(Modules:WaitForChild("WeaponController"))
-local Tracers = require(Modules:WaitForChild("Tracers"))
+local Config = require(HardOut:WaitForChild("Config"))
+local Net = require(HardOut:WaitForChild("Net"):WaitForChild("Remotes"))
 
-CharacterSetup.start()
-
--- Тело (руки/ноги/живот) должно быть видно от первого лица.
-CharacterTransparency.initialize()
-
-local hud = Hud.new()
-if Config.Camera.ShowCrosshair == false then
-	hud:setCrosshairVisible(false)
+-- Папка Modules лежит РЯДОМ со скриптом (сиблинг), а не внутри него.
+-- Важно: не block-им поток навсегда — иначе полигон не построится и будет "пусто".
+local Modules = script.Parent and script.Parent:WaitForChild("Modules", 10)
+if not Modules then
+	warn(
+		"[HardOut] НЕ НАЙДЕНА папка Modules рядом с ServerBoot. "
+			.. "Скрипт должен лежать в ServerScriptService вместе с папкой Modules."
+	)
+	if script.Parent then
+		local found = {}
+		for _, child in script.Parent:GetChildren() do
+			table.insert(found, child.Name .. " (" .. child.ClassName .. ")")
+		end
+		warn("[HardOut] Рядом с ServerBoot: " .. (#found > 0 and table.concat(found, ", ") or "ничего"))
+	end
+	return
 end
 
-local controller = PlayerController.new()
-controller.hud = hud
-controller:start()
+local CombatService = require(Modules:WaitForChild("CombatService"))
+local TestRange = require(Modules:WaitForChild("TestRange"))
+local RaidSandbox = require(Modules:WaitForChild("RaidSandbox"))
+local SampleWeapon = require(Modules:WaitForChild("SampleWeapon"))
 
-local weaponController = WeaponController.new(controller)
+-- Все RemoteEvent'ы должны существовать до первого выстрела клиента.
+for _, name in Net.Names do
+	Net.get(name)
+end
 
-Tracers.initialize()
+-- Папка под модели оружия: создаём, чтобы было куда класть.
+-- Здесь FindFirstChild уместен: папки может не быть в файле по замыслу,
+-- и мы её создаём (в отличие от папок проекта, которые обязаны быть).
+local weaponFolder = ReplicatedStorage:FindFirstChild("WeaponModels")
+if not weaponFolder then
+	weaponFolder = Instance.new("Folder")
+	weaponFolder.Name = "WeaponModels"
+	weaponFolder.Parent = ReplicatedStorage
+end
 
--- Диагностика: F2 — панель, /ho — статус в чат. Помогает понять, работает ли скрипт.
-DebugPanel.initialize()
+-- Демо-оружие, чтобы стенд можно было пощупать до появления своей модели.
+local sample = SampleWeapon.install(weaponFolder)
+if sample and Config.Debug.Verbose then
+	print(
+		"[HardOut] Папка WeaponModels была пуста — подложил демо-оружие '"
+			.. sample.Name
+			.. "'."
+	)
+	print(
+		"[HardOut] Когда положишь свою модель, демо можно удалить из папки."
+	)
+end
 
--- Самопроверка: реально ли крутится наш кадровый цикл (FPS, работает ли камера).
-SmokeTest.start()
+-- Полигон.
+if Config.Debug.Verbose then
+	print("[HardOut] Строю тестовый полигон...")
+end
+TestRange.build()
 
-print("[HardOut] Клиент готов: вид от первого лица, руки/ноги, HUD.")
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="Folder" referent="RBX0000000000000000000000000000002B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX0000000000000000000000000000001E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Camera</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+CombatService.initialize()
+RaidSandbox.initialize()
+
+if Config.Debug.Verbose then
+	print("[HardOut] Сервер готов. Оружие кладётся в ReplicatedStorage.WeaponModels.")
+end
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item><Item class="StarterPlayer" referent="RBX0000000000000000000000000000002D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayer</string><float name="CameraMaxZoomDistance">0.5</float><float name="CameraMinZoomDistance">0.5</float><float name="CharacterWalkSpeed">8</float><float name="CharacterJumpPower">42</float><bool name="CharacterUseJumpPower">true</bool><bool name="EnableMouseLockOption">false</bool></Properties><Item class="StarterPlayerScripts" referent="RBX0000000000000000000000000000002C"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">StarterPlayerScripts</string></Properties><Item class="Folder" referent="RBX0000000000000000000000000000002A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Modules</string><int64 name="SourceAssetId">-1</int64><BinaryString name="Tags"></BinaryString></Properties><Item class="ModuleScript" referent="RBX0000000000000000000000000000001D"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Camera</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Camera.luau
 	Камера от первого лица, полностью управляемая скриптом.
@@ -2318,7 +2262,7 @@ function Camera:getAimFactor()
 end
 
 return Camera
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000001F"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterRig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000001E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterRig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	CharacterRig.luau
 	"Руки и ноги от первого лица" через НАСТОЯЩЕГО персонажа.
@@ -2457,7 +2401,7 @@ function CharacterRig:destroy()
 end
 
 return CharacterRig
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000020"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterSetup</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000001F"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterSetup</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	CharacterSetup.luau
 	Приводит стандартный персонаж в состояние, нужное для FPS-стенда:
@@ -2574,7 +2518,7 @@ function CharacterSetup.start()
 end
 
 return CharacterSetup
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000021"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterTransparency</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000020"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">CharacterTransparency</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	CharacterTransparency.luau
 	Отвечает за ВИДИМОСТЬ ТЕЛА своего персонажа от первого лица.
@@ -2735,7 +2679,7 @@ function CharacterTransparency.initialize()
 end
 
 return CharacterTransparency
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000022"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">DebugPanel</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000021"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">DebugPanel</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	DebugPanel.luau
 	Панель диагностики прямо в игре: показывает, работает ли скрипт и что
@@ -3063,7 +3007,7 @@ function DebugPanel.initialize()
 end
 
 return DebugPanel
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000023"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">FirstPersonRig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000022"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">FirstPersonRig</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	FirstPersonRig.luau
 	Руки и ноги от первого лица.
@@ -3426,7 +3370,7 @@ function FirstPersonRig:destroy()
 end
 
 return FirstPersonRig
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000024"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Hud</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000023"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Hud</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Hud.luau
 	Минималистичный HUD в духе Таркова: точка/крестик, патроны, слоты,
@@ -3703,7 +3647,7 @@ function Hud:setAim(aimFactor)
 end
 
 return Hud
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000025"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Input</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000024"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Input</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Input.luau
 	Единая точка ввода. Держит состояние кнопок и раздаёт события
@@ -3833,7 +3777,7 @@ function Input.start()
 end
 
 return Input
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000026"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">PlayerController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000025"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">PlayerController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	PlayerController.luau
 	Связывает всё воедино: камера, ViewModel, ввод, движение, обновления по кадрам.
@@ -4115,7 +4059,7 @@ function PlayerController:setAdsFov(fov)
 end
 
 return PlayerController
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000027"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">SmokeTest</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000026"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">SmokeTest</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	SmokeTest.luau
 	Самопроверка «а скрипт-то правда работает?».
@@ -4187,7 +4131,7 @@ function SmokeTest.start()
 end
 
 return SmokeTest
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000028"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Tracers</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000027"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">Tracers</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	Tracers.luau
 	Визуал выстрелов: трассер (линия от ствола до попадания), вспышка в точке удара.
@@ -4304,7 +4248,7 @@ function Tracers.initialize()
 end
 
 return Tracers
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000029"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000028"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponController</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	WeaponController.luau
 	Оружие в руках на клиенте: слоты, экипировка, стрельба, перезарядка, эффекты.
@@ -4617,7 +4561,7 @@ function WeaponController:update(dt)
 end
 
 return WeaponController
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX0000000000000000000000000000002A"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponHolder</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item><Item class="ModuleScript" referent="RBX00000000000000000000000000000029"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">WeaponHolder</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
 --[[
 	WeaponHolder.luau
 	ЗАГОТОВКА ПОД ОРУЖИЕ — здесь модель пушки превращается в "оружие в руках".
@@ -4860,5 +4804,84 @@ function WeaponHolder:destroy()
 end
 
 return WeaponHolder
-]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item></Item><Item class="Players" referent="RBX0000000000000000000000000000002E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX0000000000000000000000000000002F"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item><Item class="LocalScript" referent="RBX0000000000000000000000000000002B"><Properties><BinaryString name="AttributesSerialize"></BinaryString><bool name="Disabled">false</bool><string name="Name">ClientBoot</string><int64 name="SourceAssetId">-1</int64><string name="Source"><![CDATA[--!nonstrict
+--[[
+	HardOut — клиентская точка входа.
+	Запускает HUD, контроллер игрока (камера + руки/ноги) и оружие.
+]]
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local Config = require(ReplicatedStorage:WaitForChild("HardOut"):WaitForChild("Config"))
+
+-- Курсор: без системной стрелки в центре экрана и без "свободной" мыши.
+if Config.Camera.HideCursor then
+	UserInputService.MouseIconEnabled = false
+	UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
+end
+
+-- Камера от первого лица (скриптовая, наша).
+player.CameraMode = Enum.CameraMode.LockFirstPerson
+
+-- Папка Modules — рядом с ClientBoot (внутри StarterPlayerScripts).
+-- ВАЖНО: используем WaitForChild, а не FindFirstChild. Studio загружает объекты
+-- по одному, и ClientBoot может запуститься РАНЬШЕ, чем появится соседняя
+-- папка Modules. С FindFirstChild это давало nil -> return, и весь клиент
+-- молча не работал (ни вида, ни покачивания, ни тела).
+local parent = script.Parent
+local Modules = parent and parent:WaitForChild("Modules", 10)
+if not Modules then
+	warn(
+		"[HardOut] НЕ НАЙДЕНА папка Modules рядом с ClientBoot (ожидается внутри StarterPlayerScripts)."
+	)
+	-- Диагностика: что вообще есть рядом со скриптом.
+	if parent then
+		local found = {}
+		for _, child in parent:GetChildren() do
+			table.insert(found, child.Name .. " (" .. child.ClassName .. ")")
+		end
+		warn("[HardOut] Рядом с ClientBoot: " .. (#found > 0 and table.concat(found, ", ") or "ничего"))
+	end
+	return
+end
+local CharacterSetup = require(Modules:WaitForChild("CharacterSetup"))
+local CharacterTransparency = require(Modules:WaitForChild("CharacterTransparency"))
+local DebugPanel = require(Modules:WaitForChild("DebugPanel"))
+local SmokeTest = require(Modules:WaitForChild("SmokeTest"))
+local Hud = require(Modules:WaitForChild("Hud"))
+local PlayerController = require(Modules:WaitForChild("PlayerController"))
+local WeaponController = require(Modules:WaitForChild("WeaponController"))
+local Tracers = require(Modules:WaitForChild("Tracers"))
+
+CharacterSetup.start()
+
+-- Тело (руки/ноги/живот) должно быть видно от первого лица.
+CharacterTransparency.initialize()
+
+local hud = Hud.new()
+if Config.Camera.ShowCrosshair == false then
+	hud:setCrosshairVisible(false)
+end
+
+local controller = PlayerController.new()
+controller.hud = hud
+controller:start()
+
+local weaponController = WeaponController.new(controller)
+
+Tracers.initialize()
+
+-- Диагностика: F2 — панель, /ho — статус в чат. Помогает понять, работает ли скрипт.
+DebugPanel.initialize()
+
+-- Самопроверка: реально ли крутится наш кадровый цикл (FPS, работает ли камера).
+SmokeTest.start()
+
+print("[HardOut] Клиент готов: вид от первого лица, руки/ноги, HUD.")
+]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="Players" referent="RBX0000000000000000000000000000002E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX0000000000000000000000000000002F"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
 </roblox>

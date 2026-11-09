@@ -18,8 +18,9 @@ Remotes.Names = {
 }
 
 function Remotes.getFolder(): Instance
-	local hardOut = ReplicatedStorage:FindFirstChild("HardOut")
-	local folder = hardOut and hardOut:FindFirstChild("Net")
+	-- WaitForChild, а не FindFirstChild: Studio может создать папку позже.
+	local hardOut = ReplicatedStorage:WaitForChild("HardOut", 10)
+	local folder = hardOut and hardOut:WaitForChild("Net", 5)
 	if not folder then
 		local created = Instance.new("Folder")
 		created.Name = "Net"

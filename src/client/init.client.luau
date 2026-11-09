@@ -23,11 +23,24 @@ end
 player.CameraMode = Enum.CameraMode.LockFirstPerson
 
 -- Папка Modules — рядом с ClientBoot (внутри StarterPlayerScripts).
-local Modules = script.Parent and script.Parent:FindFirstChild("Modules")
+-- ВАЖНО: используем WaitForChild, а не FindFirstChild. Studio загружает объекты
+-- по одному, и ClientBoot может запуститься РАНЬШЕ, чем появится соседняя
+-- папка Modules. С FindFirstChild это давало nil -> return, и весь клиент
+-- молча не работал (ни вида, ни покачивания, ни тела).
+local parent = script.Parent
+local Modules = parent and parent:WaitForChild("Modules", 10)
 if not Modules then
 	warn(
 		"[HardOut] НЕ НАЙДЕНА папка Modules рядом с ClientBoot (ожидается внутри StarterPlayerScripts)."
 	)
+	-- Диагностика: что вообще есть рядом со скриптом.
+	if parent then
+		local found = {}
+		for _, child in parent:GetChildren() do
+			table.insert(found, child.Name .. " (" .. child.ClassName .. ")")
+		end
+		warn("[HardOut] Рядом с ClientBoot: " .. (#found > 0 and table.concat(found, ", ") or "ничего"))
+	end
 	return
 end
 local CharacterSetup = require(Modules:WaitForChild("CharacterSetup"))

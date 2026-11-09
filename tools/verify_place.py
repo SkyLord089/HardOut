@@ -207,12 +207,37 @@ def resolve_expr(root: Node, script_node: Node, expr: str, aliases: dict) -> obj
     if not expr:
         return None
 
+    # Внешние скобки: (script.Parent) -> script.Parent ; ((x)) -> x
+    while len(expr) >= 2 and expr[0] == "(" and expr[-1] == ")":
+        depth = 0
+        balanced = True
+        for index, char in enumerate(expr):
+            if char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+                if depth == 0 and index != len(expr) - 1:
+                    balanced = False
+                    break
+        if not balanced:
+            break
+        expr = expr[1:-1].strip()
+        if not expr:
+            return None
+
+    # У сервисов есть рантайм-свойства (Players.LocalPlayer, workspace.CurrentCamera),
+    # которых в файле места нет. Их не считаем ошибкой.
+    from_service = False
     service_call = re.match(r'game\s*[:.]\s*GetService\(\s*"(\w+)"\s*\)', expr)
     if service_call:
         base = service(root, service_call.group(1))
         rest = expr[service_call.end():]
+        from_service = True
     else:
-        base_name = re.match(r"[\w.]+", expr)
+        # ВАЖНО: только идентификатор, БЕЗ точек. Иначе "script.Parent" уходил
+        # в head целиком и не находился в aliases -> проверка молча
+        # пропускалась (ложно зелёный результат).
+        base_name = re.match(r"[A-Za-z_]\w*", expr)
         if not base_name:
             return None
         head = base_name.group(0)
@@ -223,10 +248,15 @@ def resolve_expr(root: Node, script_node: Node, expr: str, aliases: dict) -> obj
             base = aliases[head]
             if base is False:
                 return False
+            # `local Players = game:GetService("Players")` -> это тоже сервис,
+            # у него есть рантайм-свойства (LocalPlayer).
+            if getattr(base, "name", None) in SERVICES:
+                from_service = True
         elif head in SERVICES:
             base = service(root, "Workspace" if head == "workspace" else head)
             if base is None:
                 return None
+            from_service = True
         else:
             return None
 
@@ -248,8 +278,11 @@ def resolve_expr(root: Node, script_node: Node, expr: str, aliases: dict) -> obj
         if text.startswith("."):
             child = current.find(text[1:])
             if child is None:
+                if from_service:
+                    return None  # рантайм-свойство, проверить нельзя
                 return False
             current = child
+            from_service = False
             continue
         child_name = match.group(1) or match.group(2)
         child = current.find(child_name)
@@ -281,11 +314,20 @@ def _aliases(root: Node, script_node: Node, source: str) -> dict:
                     changed = True
                 continue
 
+            # `parent and parent:WaitForChild("Modules")`: берём ИМЕННО тот кусок,
+            # где идёт обращение к ребёнку, а не голый алиас в nil-проверке.
             resolved: object = None
-            for piece in re.split(r"\s+(?:and|or)\s+", rhs):
-                candidate = resolve_expr(root, script_node, piece.strip(), aliases)
-                if candidate is not None:
-                    resolved = candidate
+            pieces = re.split(r"\s+(?:and|or)\s+", rhs)
+            best: object = None
+            for piece in pieces:
+                piece = piece.strip()
+                candidate = resolve_expr(root, script_node, piece, aliases)
+                if candidate is None or candidate is False:
+                    continue
+                if any(token in piece for token in (".", ":")):
+                    best = candidate
+            if best is not None:
+                resolved = best
             if resolved is not None and aliases.get(var, "__") != resolved:
                 aliases[var] = resolved
                 changed = True
@@ -310,6 +352,22 @@ def check_paths(root: Node, results: list[tuple[bool, str]]):
             r'((?:\w+\.)*\w+)\s*:\s*(WaitForChild|FindFirstChild)\(\s*"([\w\s-]+)"', source
         ):
             receiver, method, child_name = match.group(1), match.group(2), match.group(3)
+
+            # FindFirstChild на папку проекта — это ГОНКА ЗАГРУЗКИ. Именно из-за
+            # неё client не запускался: Studio создаёт объекты по одному, и скрипт
+            # успевал выполниться раньше, чем появится соседняя папка Modules
+            # (FindFirstChild -> nil -> return, и весь клиент молча мёртв).
+            creates_it = f'Instance.new("Folder")' in source or f'Instance.new("Folder")' in source
+            if (
+                method == "FindFirstChild"
+                and child_name in PROJECT_FOLDERS
+                and not creates_it
+            ):
+                problems.append(
+                    f"{script_node.path()}: {receiver}:FindFirstChild(\"{child_name}\") — "
+                    f"гонка загрузки, нужен WaitForChild (Studio может создать папку позже скрипта)"
+                )
+                continue
             if "." in receiver:
                 resolved_receiver = resolve_expr(root, script_node, receiver, aliases)
                 if resolved_receiver is False:

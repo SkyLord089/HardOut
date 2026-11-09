@@ -49,7 +49,7 @@ local function findWeaponModel(name)
 	if type(name) ~= "string" then
 		return nil
 	end
-	local folder = ReplicatedStorage:FindFirstChild("WeaponModels")
+	local folder = ReplicatedStorage:WaitForChild("WeaponModels", 5)
 	if not folder then
 		return nil
 	end

@@ -309,8 +309,10 @@ def build() -> tuple[str, dict[str, str]]:
         "ServerScriptService",
         [empty_attributes(), name("ServerScriptService")],
         [
-            script_item(SRC / "server" / "init.server.luau", "Script", "ServerBoot"),
+            # Папка Modules идёт ПЕРВОЙ: Studio создаёт объекты по порядку, и
+            # скрипт, запустившись раньше своей папки, не нашёл бы её.
             folder_from_dir(SRC / "server" / "modules", "Modules"),
+            script_item(SRC / "server" / "init.server.luau", "Script", "ServerBoot"),
         ],
     )
 
@@ -318,8 +320,9 @@ def build() -> tuple[str, dict[str, str]]:
         "StarterPlayerScripts",
         [empty_attributes(), name("StarterPlayerScripts")],
         [
-            script_item(SRC / "client" / "init.client.luau", "LocalScript", "ClientBoot"),
+            # Сначала Modules, потом ClientBoot (см. комментарий выше).
             folder_from_dir(SRC / "client" / "modules", "Modules"),
+            script_item(SRC / "client" / "init.client.luau", "LocalScript", "ClientBoot"),
         ],
     )
 
