@@ -586,6 +586,28 @@ test("Config: скорости и слоты в разумных предела�
 	assertTrue(#Config.Weapons.FolderPath > 0)
 end)
 
+test("Конструкторы: .new(...) возвращает объект, а не nil", function()
+	-- Реальный баг: PlayerController.new() не имел `return self`, из-за чего
+	-- ClientBoot падал на `controller.hud = hud` и весь клиент умирал.
+	local ok2, spring = pcall(function()
+		return Spring.new(0)
+	end)
+	assertTrue(ok2, "Spring.new упал: " .. tostring(spring))
+	assertTrue(spring ~= nil, "Spring.new вернул nil")
+
+	local ok3, recoil = pcall(function()
+		return Recoil.new()
+	end)
+	assertTrue(ok3, "Recoil.new упал: " .. tostring(recoil))
+	assertTrue(recoil ~= nil, "Recoil.new вернул nil")
+
+	local ok4, state = pcall(function()
+		return WeaponState.new({ MagazineSize = 30, RoundsPerMinute = 600, Damage = 20, Range = 200 }, 30)
+	end)
+	assertTrue(ok4, "WeaponState.new упал: " .. tostring(state))
+	assertTrue(state ~= nil, "WeaponState.new вернул nil")
+end)
+
 ------------------------------------------------------------------------
 -- Итог
 ------------------------------------------------------------------------

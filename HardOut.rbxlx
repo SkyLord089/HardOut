@@ -3824,6 +3824,8 @@ function PlayerController.new()
 	self.character = nil
 	self.adsFov = Config.Camera.BaseFov
 	self.hud = nil
+
+	return self
 end
 
 function PlayerController:start()
@@ -4858,30 +4860,72 @@ local PlayerController = require(Modules:WaitForChild("PlayerController"))
 local WeaponController = require(Modules:WaitForChild("WeaponController"))
 local Tracers = require(Modules:WaitForChild("Tracers"))
 
-CharacterSetup.start()
+--[[
+	Запуск по шагам, каждый в pcall.
 
--- Тело (руки/ноги/живот) должно быть видно от первого лица.
-CharacterTransparency.initialize()
-
-local hud = Hud.new()
-if Config.Camera.ShowCrosshair == false then
-	hud:setCrosshairVisible(false)
+	Зачем: раньше одна ошибка в середине (например, nil из конструктора)
+	обрывала весь клиент, и снаружи это выглядело как "ничего не работает,
+	кроме мыши". Теперь падение одного шага не убивает остальные, а в Output
+	печатается точное место.
+]]
+local function step(label: string, callback: () -> ()): boolean
+	local ok, err = pcall(callback)
+	if not ok then
+		warn(string.format('[HardOut] Шаг "%s" упал: %s', label, tostring(err)))
+	end
+	return ok
 end
 
-local controller = PlayerController.new()
-controller.hud = hud
-controller:start()
+local hud = nil
+local controller = nil
 
-local weaponController = WeaponController.new(controller)
+step("тело (видимость)", function()
+	CharacterSetup.start()
+	CharacterTransparency.initialize()
+end)
 
-Tracers.initialize()
+step("HUD", function()
+	hud = Hud.new()
+	if Config.Camera.ShowCrosshair == false then
+		hud:setCrosshairVisible(false)
+	end
+end)
 
--- Диагностика: F2 — панель, /ho — статус в чат. Помогает понять, работает ли скрипт.
-DebugPanel.initialize()
+step("контроллер игрока", function()
+	controller = PlayerController.new()
+	if not controller then
+		error("PlayerController.new() вернул nil")
+	end
+	controller.hud = hud
+	controller:start()
+end)
 
--- Самопроверка: реально ли крутится наш кадровый цикл (FPS, работает ли камера).
-SmokeTest.start()
+if controller then
+	step("оружие", function()
+		WeaponController.new(controller)
+	end)
+end
 
-print("[HardOut] Клиент готов: вид от первого лица, руки/ноги, HUD.")
+step("трассеры", function()
+	Tracers.initialize()
+end)
+
+-- Диагностика: F2 — панель, /ho — статус в чат.
+step("диагностика", function()
+	DebugPanel.initialize()
+end)
+
+-- Самопроверка: реально ли крутится кадровый цикл (FPS, камера).
+step("пульс", function()
+	SmokeTest.start()
+end)
+
+if controller then
+	print("[HardOut] Клиент готов: вид от первого лица, руки/ноги, HUD.")
+else
+	warn(
+		"[HardOut] Клиент запустился НЕ полностью: контроллер игрока не поднялся, см. ошибки выше."
+	)
+end
 ]]></string><BinaryString name="Tags"></BinaryString></Properties></Item></Item></Item><Item class="Players" referent="RBX0000000000000000000000000000002E"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">Players</string><float name="RespawnTime">1</float><bool name="CharacterAutoLoads">true</bool></Properties></Item><Item class="SoundService" referent="RBX0000000000000000000000000000002F"><Properties><BinaryString name="AttributesSerialize"></BinaryString><string name="Name">SoundService</string><bool name="RespectFilteringEnabled">true</bool><float name="DistanceFactor">3.33</float></Properties></Item>
 </roblox>

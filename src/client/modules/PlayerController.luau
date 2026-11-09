@@ -45,6 +45,8 @@ function PlayerController.new()
 	self.character = nil
 	self.adsFov = Config.Camera.BaseFov
 	self.hud = nil
+
+	return self
 end
 
 function PlayerController:start()
