@@ -103,7 +103,7 @@ local function refresh()
 	lastCameraCFrame = camera.CFrame
 
 	textLabel.Text = string.format(
-		"[HardOut] диагностика (F2 — закрыть)\n\n%s\n\n%s\nкамера двигалась: %s\n\n/eye 0.8   /eyeoff 0.4   /body on|off   /head on|off\n/fov 80   /bob 0.2   /shake 0.2   /lean 1.2   /ho",
+		"[HardOut] диагностика (F2 — закрыть)\n\n%s\n\n%s\nкамера двигалась: %s\n\n/eye 0.8   /eyeoff 0.4   /body on|off   /head on|off\n/fov 80   /bob 0.035|off   /sway 0.01   /roll 0.5   /ho",
 		describeCharacter(),
 		describeCamera(),
 		cameraMoved and "ДА" or "нет (стоишь на месте?)"
@@ -182,12 +182,39 @@ commands.fov = function(argument)
 end
 
 commands.bob = function(argument)
+	if argument == "off" then
+		Config.Camera.HeadBob.Enabled = false
+		return notify("покачивание выключено")
+	end
+	if argument == "on" then
+		Config.Camera.HeadBob.Enabled = true
+		return notify("покачивание включено")
+	end
 	local value = tonumber(argument)
 	if not value then
-		return notify("/bob 0.045")
+		return notify("/bob 0.035 | /bob off")
 	end
-	Config.Camera.HeadBob.Amplitude = math.clamp(value, 0, 1)
-	notify(string.format("покачивание = %.3f", Config.Camera.HeadBob.Amplitude))
+	Config.Camera.HeadBob.Enabled = true
+	Config.Camera.HeadBob.Amplitude = math.clamp(value, 0, 0.5)
+	notify(string.format("покачивание: Amplitude = %.3f", Config.Camera.HeadBob.Amplitude))
+end
+
+commands.sway = function(argument)
+	local value = tonumber(argument)
+	if not value then
+		return notify("/sway 0.01   (боковое смещение, 0 = выключено)")
+	end
+	Config.Camera.HeadBob.Sway = math.clamp(value, 0, 0.2)
+	notify(string.format("боковое покачивание = %.3f", Config.Camera.HeadBob.Sway))
+end
+
+commands.roll = function(argument)
+	local value = tonumber(argument)
+	if not value then
+		return notify("/roll 0.5   (крен в градусах, 0 = выключено)")
+	end
+	Config.Camera.HeadBob.RollDegrees = math.clamp(value, 0, 5)
+	notify(string.format("крен = %.2f град", Config.Camera.HeadBob.RollDegrees))
 end
 
 commands.shake = function(argument)

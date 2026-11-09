@@ -37,6 +37,7 @@ function Camera.new(player)
 	self.leanTarget = 0
 	self.leanAngle = 0
 	self.bobPhase = 0
+	self.bobAmount = 0
 	self.shake = 0
 	self.aimed = false
 	self.aimFactor = 0
@@ -107,12 +108,43 @@ function Camera:update(dt)
 
 	local bob = Config.Camera.HeadBob
 	local bobY, bobRoll, bobX = 0, 0, 0
-	if bob.Enabled and self.speed > 0.5 then
-		self.bobPhase += dt * (bob.Frequency * math.sqrt(self.speed / Config.Movement.WalkSpeed)) * math.pi * 2
-		local amount = math.clamp(self.speed / Config.Movement.WalkSpeed, 0, 1.6)
-		bobY = math.abs(math.sin(self.bobPhase)) * bob.Amplitude * amount
-		bobRoll = math.sin(self.bobPhase) * 1.2 * amount
-		bobX = math.cos(self.bobPhase) * bob.Amplitude * 0.6 * amount
+
+	--[[
+		Покачивание.
+
+		Что было не так раньше:
+		  * боковое смещение прибавлялось в МИРОВЫХ осях (Vector3.new(bobX, ...)),
+		    поэтому при повороте на 90 градусов "влево-вправо" превращалось в
+		    "вперёд-назад" — ощущение очень странное;
+		  * крен был фиксированные 1.2 градуса и не зависел от настройки;
+		  * вертикаль считалась как |sin| — с изломами, отсюда дёрганье;
+		  * амплитуда включалась скачком на пороге 0.5 studs/s.
+
+		Теперь:
+		  * смещение применяется В ОСЯХ КАМЕРЫ (right/up) — покачивание всегда
+		    "влево-вправо" относительно взгляда;
+		  * вертикаль — гладкий синус, без изломов;
+		  * амплитуда плавно нарастает и плавно затухает при остановке;
+		  * крен и боковой сдвиг по умолчанию 0 (включаются в Config, если надо);
+		  * при прицеливании покачивание ослабляется.
+	]]
+
+	-- Плавное нарастание/затухание: без "прыжка" на пороге скорости.
+	local speedRatio = math.clamp(self.speed / math.max(Config.Movement.WalkSpeed, 1), 0, 1.8)
+	local targetAmount = (bob.Enabled and self.speed > 0.5) and speedRatio or 0
+	if self.aimed then
+		targetAmount *= 0.35
+	end
+	self.bobAmount = (self.bobAmount or 0) + (targetAmount - (self.bobAmount or 0)) * math.clamp(dt * 7, 0, 1)
+
+	if self.bobAmount > 0.001 then
+		-- Фаза привязана к скорости: идёшь медленнее — шаги реже.
+		local stepsPerSecond = (bob.Frequency or 1.9) * math.max(speedRatio, 0.25)
+		self.bobPhase = (self.bobPhase or 0) + dt * stepsPerSecond * math.pi * 2
+		local amount = self.bobAmount
+		bobY = math.sin(self.bobPhase) * (bob.Amplitude or 0) * amount
+		bobX = math.sin(self.bobPhase * 0.5) * (bob.Sway or 0) * amount
+		bobRoll = math.sin(self.bobPhase * 0.5 + math.pi) * (bob.RollDegrees or 0) * amount
 	end
 
 	self.leanAngle += (self.leanTarget * Config.Camera.LeanAngle - self.leanAngle) * math.clamp(dt * 10, 0, 1)
@@ -128,7 +160,7 @@ function Camera:update(dt)
 	-- не будут видны при взгляде вниз (а near-plane срежет шею).
 	local forward = Config.Camera.EyeForward or 0.6
 	local ahead = Vector3.new(-math.sin(math.rad(self.smoothedAngles.X)), 0, -math.cos(math.rad(self.smoothedAngles.X)))
-	local origin = head.Position + Config.Camera.EyeOffset + ahead * forward + Vector3.new(bobX, bobY + crouchOffset, 0)
+	local origin = head.Position + Config.Camera.EyeOffset + ahead * forward + Vector3.new(0, bobY + crouchOffset, 0)
 
 	-- Мягкое сглаживание: камера чуть "догоняет" мышь (не резкие рывки).
 	local smooth = Config.Camera.Smoothing or 0.35
@@ -147,6 +179,11 @@ function Camera:update(dt)
 	)
 
 	local cameraCFrame = CFrame.new(origin) * rotation
+
+	-- Боковое покачивание — строго в осях камеры (её собственный "вправо").
+	if bobX ~= 0 then
+		cameraCFrame = CFrame.new(cameraCFrame.Position + cameraCFrame.RightVector * bobX) * rotation
+	end
 	camera.CFrame = cameraCFrame
 	camera.FieldOfView = self.fovSpring:Step(dt)
 	self.aimFactor = self.aimSpring:Step(dt)
