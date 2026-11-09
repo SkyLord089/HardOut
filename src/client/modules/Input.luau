@@ -108,6 +108,12 @@ function Input.start()
 
 	UserInputService.InputEnded:Connect(function(input)
 		local kind = input.UserInputType
+		-- Пробел: БЕЗ этой ветки "Jump Ended" не приходил никогда, и
+		-- jumpRequested оставался true навсегда — персонаж прыгал вечно.
+		if kind == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Space then
+			emit("Jump", "Ended")
+			return
+		end
 		if kind == Enum.UserInputType.MouseButton1 then
 			emit("Fire", "Ended")
 		elseif kind == Enum.UserInputType.MouseButton2 then

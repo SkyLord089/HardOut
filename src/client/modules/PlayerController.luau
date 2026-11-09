@@ -45,6 +45,9 @@ function PlayerController.new()
 	self.character = nil
 	self.adsFov = Config.Camera.BaseFov
 	self.hud = nil
+	self.jumpHeld = false
+	self.lastJumpAt = 0
+	self.jumpQueuedUntil = nil
 
 	return self
 end
@@ -77,11 +80,12 @@ function PlayerController:start()
 	end, "Began")
 
 	Input.on("Jump", function()
-		self.jumpRequested = true
+		self.jumpHeld = true
 		self:tryJump()
 	end, "Began")
 	Input.on("Jump", function()
-		self.jumpRequested = false
+		self.jumpHeld = false
+		self.jumpQueuedUntil = nil
 	end, "Ended")
 
 	-- Подписки на персонажа/кадры ставим ОДИН раз: повторный start()
@@ -126,6 +130,7 @@ function PlayerController:tryJump()
 		or state == Enum.HumanoidStateType.RunningNoPhysics
 	then
 		self.lastJumpAt = now
+		self.jumpQueuedUntil = nil
 		humanoid.Jump = true
 	else
 		-- Запомнили намерение: прыгнем, как только приземлимся.
@@ -234,9 +239,25 @@ function PlayerController:updateMovement(dt)
 	humanoid.WalkSpeed = self.walkSpeed
 	humanoid:Move(worldMove * (worldMove.Magnitude > 0 and 1 or 0), false)
 
-	-- Зажатый пробел / прыжок в воздухе: дожимаем, когда коснёмся земли.
-	if self.jumpRequested or (self.jumpQueuedUntil and os.clock() < self.jumpQueuedUntil) then
+	-- Страховка: если событие отпускания пробела потерялось (потеря фокуса окна,
+	-- Alt+Tab), спрашиваем у движка реальное состояние клавиши. Без этого
+	-- персонаж прыгал бы бесконечно.
+	if self.jumpHeld and not UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+		self.jumpHeld = false
+		self.jumpQueuedUntil = nil
+	end
+
+	-- Прыжок только по НАЖАТИЮ. Дожим (jumpQueuedUntil) срабатывает один раз
+	-- и сбрасывается; без этого персонаж прыгал бы бесконечно.
+	if self.jumpHeld then
 		self:tryJump()
+	elseif self.jumpQueuedUntil then
+		if os.clock() < self.jumpQueuedUntil then
+			self:tryJump()
+		end
+		if not self.jumpHeld then
+			self.jumpQueuedUntil = nil
+		end
 	end
 
 	-- Присед: уменьшаем HipHeight, чтобы модель реально опускалась.

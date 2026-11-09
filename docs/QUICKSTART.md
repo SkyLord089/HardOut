@@ -71,7 +71,7 @@ rojo build default.project.json -o HardOut.rbxlx
 | `/bob 0.02` | сила покачивания головы |
 | `/shake 0.2` | тряска от выстрела |
 | `/lean 1.0` | наклон в стрейфе |
-| `/smooth 0.3` | сглаживание поворота (0 = 1:1 с мышью) |
+| `/smooth 0` | сглаживание поворота (0 = 1:1 с мышью, по умолчанию) |
 
 Подобрал значения — перенеси их в `src/shared/HardOut/Config.luau`
 (те же имена: `Camera.EyeForward`, `Camera.EyeOffset`, `ViewModel.ShowBody` …)

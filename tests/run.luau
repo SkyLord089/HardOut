@@ -561,6 +561,13 @@ test("Config: режим вида и прятанье курсора задан�
 	assertTrue(Config.Camera.ShakeScale <= 0.5, "тряска от выстрела слишком сильная")
 end)
 
+test("Config: поворот мыши без сглаживания", function()
+	assertTrue(
+		Config.Camera.Smoothing == 0,
+		"сглаживание камеры включено — мышь будет плавать"
+	)
+end)
+
 test("Config: тело видно от первого лица", function()
 	assertTrue(
 		Config.ViewModel.ShowBody == true,
